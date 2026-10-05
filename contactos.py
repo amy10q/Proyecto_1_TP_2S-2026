@@ -7,10 +7,8 @@ TIPOS_TELEFONO = ("M", "Móvil", "C", "Casa", "T", "Trabajo", "O", "Otro")
 # ---------------------------------- INICIO MENU REGISTRAR AREAS -------------------------------------------
 # ------------- FUNCIONES AUXILIARES DE ÁREAS -------------
 def buscar_area(areas, codigo):
-    # E: lista areas, codigo (int)
-    # S: índice de la tupla con ese código, o -1 si no está
-
-    posicion = -1
+    
+    posicion = -1 # ya que está fuera del rango permitido para los códigos de área
 
     for i in range(len(areas)):
         if areas[i][0] == codigo:
@@ -19,8 +17,6 @@ def buscar_area(areas, codigo):
     return posicion
 
 def existe_area(areas, codigo):
-    # E: lista areas, codigo (int)
-    # S: True si ya está registrada, False si no
 
     posicion = buscar_area(areas, codigo)
 
