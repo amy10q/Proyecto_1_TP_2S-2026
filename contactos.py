@@ -7,8 +7,9 @@ TIPOS_TELEFONO = ("M", "Móvil", "C", "Casa", "T", "Trabajo", "O", "Otro")
 # ---------------------------------- INICIO MENU REGISTRAR AREAS -------------------------------------------
 # ------------- FUNCIONES AUXILIARES DE ÁREAS -------------
 def buscar_area(areas, codigo):
-    
-    posicion = -1 # ya que está fuera del rango permitido para los códigos de área
+    # Busca un código dentro de la lista de áreas
+    # Devuelve la posición si lo encuentra, o -1 si no existe
+    posicion = -1 # Indica que el área no se ha encontrado
 
     for i in range(len(areas)):
         if areas[i][0] == codigo:
@@ -17,6 +18,8 @@ def buscar_area(areas, codigo):
     return posicion
 
 def existe_area(areas, codigo):
+     # Comprueba si el código se encuentra registrado 
+     # Devuelve True si existe y False si no existe
 
     posicion = buscar_area(areas, codigo)
 
@@ -30,146 +33,218 @@ def existe_area(areas, codigo):
 # ------------- AGREGAR ÁREA -------------
 
 def agregar_area():
-    print("\n      REGISTRAR ÁREAS: AGREGAR\n")
+    while True:
+        print("\n      REGISTRAR ÁREAS: AGREGAR\n")
 
-    codigo = input("Ingrese el número de área: ")
+        codigo = input("Ingrese el número de área: ")
 
-    # Validar que el código sean solamente números
-    if codigo.isdigit():
+        # Si el usuario escribe C, regresa al menú anterior
+        if codigo == "C":
+            return
 
-        codigo = int(codigo)
+        # Validar que el código sean solamente números
+        if codigo.isdigit():
 
-        # Validar que esté entre 1 y 999
-        if codigo >= 1 and codigo <= 999:
+            codigo = int(codigo)
 
-            # Revisar si el código ya existe
-            if existe_area(areas, codigo):
-                print("ALERTA: El área ya está registrada.")
+            # Validar que esté entre 1 y 999
+            if codigo >= 1 and codigo <= 999:
 
-            else:
-                nombre = input("Ingrese el nombre del área: ")
-
-                # Validar que el nombre tenga entre 1 y 40 caracteres
-                nombre = nombre.strip()
-
-                if len(nombre) >= 1 and len(nombre) <= 40:
-
-                    # Crear la tupla
-                    area = (codigo, nombre)
-
-                    # Agregar la tupla a la lista
-                    areas.append(area)
-
-                    print("Área registrada correctamente.")
+                # Revisar si el código ya existe
+                if existe_area(areas, codigo):
+                    print("ALERTA: El área ya está registrada.")
 
                 else:
-                    print("ERROR: El nombre debe tener entre 1 y 40 caracteres.")
+                    nombre = input("Ingrese el nombre del área: ")
+
+                    # Validar que el nombre tenga entre 1 y 40 caracteres
+                    nombre = nombre.strip()
+
+                    if len(nombre) >= 1 and len(nombre) <= 40:
+
+                        # Crear la tupla
+                        area = (codigo, nombre)
+
+                        # Confirmar si desea registrar o cancelar el área
+                        opcion = input("¿DESEA REGISTRAR EL AREA? A-ACEPTAR C-CANCELAR: ")
+
+                        while opcion != "A" and opcion != "C":
+                            print("ERROR: OPCIÓN NO VÁLIDA.")
+                            opcion = input("OPCIÓN A-ACEPTAR C-CANCELAR: ")
+
+                        if opcion == "A":
+                            areas.append(area)
+                            print("Área registrada correctamente.")
+                        else:
+                            print("Registro cancelado")
+
+                    else:
+                        print("ERROR: El nombre debe tener entre 1 y 40 caracteres.")
+
+            else:
+                print("ERROR: El número de área debe estar entre 1 y 999.")
 
         else:
-            print("ERROR: El número de área debe estar entre 1 y 999.")
+            print("ERROR: El número de área debe contener solamente números.")
 
-    else:
-        print("ERROR: El número de área debe contener solamente números.")
+# ------------- FIN DE AGREGAR ÁREA -------------
 
 # ------------- CONSULTAR ÁREA -------------
 
 def consultar_area():
-    print("\n      REGISTRAR ÁREAS: CONSULTAR\n")
+    while True:
+        print("\n      REGISTRAR ÁREAS: CONSULTAR\n")
 
-    codigo = input("Ingrese el número de área: ")
+        codigo = input("Ingrese el número de área: ")
 
-    if codigo.isdigit():
+        # Si escribe C, regresa al menú anterior
+        if codigo == "C":
+            return
 
-        codigo = int(codigo)
+        # Validar que el código sea numérico
+        if codigo.isdigit():
 
-        if codigo >= 1 and codigo <= 999:
+            codigo = int(codigo)
 
-            posicion = buscar_area(areas, codigo)
+            # Validar que el código esté entre 1 y 999
+            if codigo >= 1 and codigo <= 999:
 
-            if posicion == -1:
-                print("ALERTA: El área no está registrada.")
+                posicion = buscar_area(areas, codigo)
 
-            else:
-                print("Código:", areas[posicion][0])
-                print("Nombre:", areas[posicion][1])
-
-        else:
-            print("ERROR: El número de área debe estar entre 1 y 999.")
-
-    else:
-        print("ERROR: El número de área debe contener solamente números.")
-
-# ------------- CONSULTAR ÁREA -------------
-
-def modificar_area():
-    print("\n      REGISTRAR ÁREAS: MODIFICAR\n")
-
-    codigo = input("Ingrese el número de área: ")
-
-    if codigo.isdigit():
-
-        codigo = int(codigo)
-
-        if codigo >= 1 and codigo <= 999:
-
-            posicion = buscar_area(areas, codigo)
-
-            if posicion == -1:
-                print("ALERTA: El área no está registrada.")
-
-            else:
-                print("Código de área:", areas[posicion][0])
-                print("Nombre:", areas[posicion][1])
-
-                nuevo_nombre = input("Modificación del nombre: ")
-
-                nuevo_nombre = nuevo_nombre.strip()
-
-                if len(nuevo_nombre) >= 1 and len(nuevo_nombre) <= 40:
-
-                    areas[posicion] = (codigo, nuevo_nombre)
-
-                    print("Área modificada correctamente.")
+                # Comprobar si el área está registrada
+                if posicion == -1:
+                    print("ALERTA: El área no está registrada, no se puede consultar.")
 
                 else:
-                    print("ERROR: El nombre debe tener entre 1 y 40 caracteres.")
+                    print("Código:", areas[posicion][0])
+                    print("Nombre:", areas[posicion][1])
 
-        else:
-            print("ERROR: El número de área debe estar entre 1 y 999.")
+                    # Aceptar la consulta para continuar
+                    opcion = input("OPCIÓN A-ACEPTAR: ")
 
-    else:
-        print("ERROR: El número de área debe contener solamente números.")
-
-# ------------- ELIMINAR ÁREA -------------
-def eliminar_area():
-    print("\n      REGISTRAR ÁREAS: ELIMINAR\n")
-
-    codigo = input("Ingrese el número de área: ")
-
-    if codigo.isdigit():
-
-        codigo = int(codigo)
-
-        if codigo >= 1 and codigo <= 999:
-
-            posicion = buscar_area(areas, codigo)
-
-            if posicion == -1:
-                print("ALERTA: El área no está registrada.")
+                    while opcion != "A":
+                        print("ERROR: OPCIÓN NO VÁLIDA.")
+                        opcion = input("OPCIÓN A-ACEPTAR: ")
 
             else:
-                print("Código de área:", areas[posicion][0])
-                print("Nombre:", areas[posicion][1])
-
-                areas.pop(posicion)
-
-                print("Área eliminada correctamente.")
+                print("ERROR: El número de área debe estar entre 1 y 999.")
 
         else:
-            print("ERROR: El número de área debe estar entre 1 y 999.")
+            print("ERROR: El número de área debe contener solamente números.")
 
-    else:
-        print("ERROR: El número de área debe contener solamente números.")
+# ------------- FIN DE CONSULTAR ÁREA -------------
+
+# ------------- MODIFICAR ÁREA -------------
+
+def modificar_area():
+    while True:
+        print("\n      REGISTRAR ÁREAS: MODIFICAR\n")
+
+        codigo = input("Ingrese el número de área: ")
+
+        # Regresar al menú anterior
+        if codigo == "C":
+            return
+
+        if codigo.isdigit():
+
+            codigo = int(codigo)
+
+            if codigo >= 1 and codigo <= 999:
+
+                posicion = buscar_area(areas, codigo)
+
+                if posicion == -1:
+                    print("ALERTA: El área no está registrada.")
+
+                else:
+                    print("Código de área:", areas[posicion][0])
+                    print("Nombre:", areas[posicion][1])
+
+                    nuevo_nombre = input("Modificación del nombre: ")
+
+                    nuevo_nombre = nuevo_nombre.strip()
+
+                    # Si no se escribe nada, conservar el nombre anterior
+                    if nuevo_nombre == "":
+                        nuevo_nombre = areas[posicion][1]
+
+                    # Validar longitud del nombre
+                    if len(nuevo_nombre) >= 1 and len(nuevo_nombre) <= 40:
+
+                        opcion = input("¿DESEA MODIFICAR EL ÁREA? A-ACEPTAR C-CANCELAR: ")
+
+                        while opcion != "A" and opcion != "C":
+                            print("ERROR: OPCIÓN NO VÁLIDA.")
+                            opcion = input("OPCIÓN A-ACEPTAR C-CANCELAR: ")
+
+                        if opcion == "A":
+                            areas[posicion] = (codigo, nuevo_nombre)
+                            print("Área modificada correctamente.")
+                        else: 
+                            print("Modificación cancelada")
+
+                    else:
+                        print("ERROR: El nombre debe tener entre 1 y 40 caracteres.")
+
+            else:
+                print("ERROR: El número de área debe estar entre 1 y 999.")
+
+        else:
+            print("ERROR: El número de área debe contener solamente números.")
+
+# ------------- FIN DE MODIFICAR ÁREA -------------
+
+# ------------- ELIMINAR ÁREA -------------
+
+def eliminar_area():
+    while True:
+        print("\n      REGISTRAR ÁREAS: ELIMINAR\n")
+
+        codigo = input("Ingrese el número de área: ")
+
+        # Regresar al menú anterior
+        if codigo == "C":
+            return
+
+        if codigo.isdigit():
+
+            codigo = int(codigo)
+
+            if codigo >= 1 and codigo <= 999:
+
+                posicion = buscar_area(areas, codigo)
+
+                if posicion == -1:
+                    print("ALERTA: El área no está registrada.")
+
+                else:
+                    print("Código de área:", areas[posicion][0])
+                    print("Nombre:", areas[posicion][1])
+
+                    # Confirmar si se desea eliminar el área
+
+                    opcion = input("¿DESEA ELIMINAR EL ÁREA? A-ACEPTAR C-CANCELAR: ")
+
+                    while opcion != "A" and opcion != "C":
+
+                        print("ERROR: OPCIÓN NO VÁLIDA.")
+                        opcion = input("OPCIÓN A-ACEPTAR C-CANCELAR: ")
+
+                    if opcion == "A":
+                        areas.pop(posicion)
+                        print("Área eliminada correctamente.")
+
+                    else:
+                        print("Eliminación cancelada")
+
+            else:
+                print("ERROR: El número de área debe estar entre 1 y 999.")
+
+        else:
+            print("ERROR: El número de área debe contener solamente números.")
+
+# ------------- FIN DE ELIMINAR ÁREA -------------
 
 def menu_regitrar_areas():
     while True:
@@ -192,12 +267,9 @@ def menu_regitrar_areas():
             case "4":
                 eliminar_area()
             case "0":
-                print("Programa finalizado.")
                 break
             case _:
                 print("ERROR: OPCIÓN NO VÁLIDA")
-
-
 
 # ---------------------------------- FIN MENU REGISTRAR AREAS -------------------------------------------
 def menu_registrar_contactos():
