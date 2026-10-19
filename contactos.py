@@ -1,18 +1,19 @@
 # ------------- DATOS -------------
 areas = []        # lista de tuplas (codigo, nombre)
 contactos = []    # lista de listas
+configuracion = [] # Guardar el area y el tipo de telefono por omision
 TIPOS_TELEFONO = ("M", "Móvil", "C", "Casa", "T", "Trabajo", "O", "Otro")
 # ------------- FIN DATOS -------------
 
-# ---------------------------------- INICIO MENU REGISTRAR AREAS -------------------------------------------
+# ---------------------------------- INICIO REGISTRAR AREAS -------------------------------------------
 # ------------- FUNCIONES AUXILIARES DE ÁREAS -------------
-def buscar_area(areas, codigo):
+def buscar_area(areas, codigo): # devuelve la posición dentro de la lista
     # Busca un código dentro de la lista de áreas
     # Devuelve la posición si lo encuentra, o -1 si no existe
     posicion = -1 # Indica que el área no se ha encontrado
 
     for i in range(len(areas)):
-        if areas[i][0] == codigo:
+        if areas[i][0] == codigo: # [i][0], [i] = cuál tupla de la lista se va a revisar y [0] = cual posiscion de la tupla se va a revisar
             posicion = i
 
     return posicion
@@ -36,7 +37,7 @@ def agregar_area():
     while True:
         print("\n      REGISTRAR ÁREAS: AGREGAR\n")
 
-        codigo = input("Ingrese el número de área: ")
+        codigo = input("Ingrese el número de área: ").strip() # .strip() Es para eliminar los espacios en blanco
 
         # Si el usuario escribe C, regresa al menú anterior
         if codigo == "C":
@@ -95,7 +96,7 @@ def consultar_area():
     while True:
         print("\n      REGISTRAR ÁREAS: CONSULTAR\n")
 
-        codigo = input("Ingrese el número de área: ")
+        codigo = input("Ingrese el número de área: ").strip() # .strip() Es para eliminar los espacios en blanco
 
         # Si escribe C, regresa al menú anterior
         if codigo == "C":
@@ -140,7 +141,7 @@ def modificar_area():
     while True:
         print("\n      REGISTRAR ÁREAS: MODIFICAR\n")
 
-        codigo = input("Ingrese el número de área: ")
+        codigo = input("Ingrese el número de área: ").strip() # .strip() Es para eliminar los espacios en blanco
 
         # Regresar al menú anterior
         if codigo == "C":
@@ -201,7 +202,7 @@ def eliminar_area():
     while True:
         print("\n      REGISTRAR ÁREAS: ELIMINAR\n")
 
-        codigo = input("Ingrese el número de área: ")
+        codigo = input("Ingrese el número de área: ").strip() # .strip() Es para eliminar los espacios en blanco
 
         # Regresar al menú anterior
         if codigo == "C":
@@ -246,6 +247,8 @@ def eliminar_area():
 
 # ------------- FIN DE ELIMINAR ÁREA -------------
 
+# ---------------------------------- INICIO MENU REGISTRAR AREAS -------------------------------------------
+
 def menu_regitrar_areas():
     while True:
         print("\n      REGISTRAR ÁREAS\n")
@@ -272,6 +275,85 @@ def menu_regitrar_areas():
                 print("ERROR: OPCIÓN NO VÁLIDA")
 
 # ---------------------------------- FIN MENU REGISTRAR AREAS -------------------------------------------
+
+
+# ------------- CONFIGURACIÓN DE CONTACTOS -------------
+
+def configurar_lista_contactos():
+    print("\n      CONFIGURACIÓN DE LA LISTA DE CONTACTOS\n")
+
+    # Comprobar que existan áreas registradas antes de configurar
+    if len(areas) == 0:
+        print("No hay áreas registradas. Primero debe registrar un área.")
+        return # Esto no estaba indicado en las instrucciones, pero me parecio importante, ya que si entra a configuración, estaría en bucle pidiendo código
+
+    # Solicitar el código de área hasta que se ingrese uno válido
+    while True:
+        codigo = input("Área por omisión: ").strip() # .strip() Es para eliminar los espacios en blanco
+
+        if codigo.isdigit():
+            codigo = int(codigo)
+
+            posicion = buscar_area(areas, codigo)
+
+             # Si la posición es -1, el área no está registrada
+            if posicion == -1:
+                print("ESTA ÁREA NO ESTÁ REGISTRADA, NO SE PUEDE SELECCIONAR")
+
+            else:
+                # Mostrar el nombre del área encontrada
+                print("Nombre del área:", areas[posicion][1])
+                break
+
+        else:
+            print("ERROR: El código debe contener solamente números.")
+
+    # Solicitar y validar el tipo de teléfono por omisión
+    while True:
+        tipo = input("\nTipo de teléfono por omisión (M:Móvil, C:Casa, T:Trabajo, O:Otro): ")
+
+        # Comprobar que el tipo ingresado sea uno de los códigos permitidos
+        # Las posiciones 0, 2, 4 y 6 contienen las letras M, C, T y O
+        if (tipo == TIPOS_TELEFONO[0] or
+            tipo == TIPOS_TELEFONO[2] or
+            tipo == TIPOS_TELEFONO[4] or
+            tipo == TIPOS_TELEFONO[6]):
+            break
+
+        else:
+            # Si el tipo no existe, mostrar error y solicitarlo nuevamente
+            print("ESTE TIPO DE TELÉFONO NO EXISTE, NO SE PUEDE SELECCIONAR")
+
+    # Confirmar si desea guardar la configuración
+    opcion = input("\n¿DESEA GUARDAR LA CONFIGURACIÓN? A-ACEPTAR C-CANCELAR: ")
+
+    # Repetir la pregunta si no se ingresa A o C
+    while opcion != "A" and opcion != "C":
+        print("ERROR: OPCIÓN NO VÁLIDA.")
+        opcion = input("OPCIÓN A-ACEPTAR C-CANCELAR: ")
+
+    # Guardar los valores solamente si el usuario acepta
+    if opcion == "A":
+
+        # Si la lista está vacía, agregar los primeros valores
+        if len(configuracion) == 0:
+            configuracion.append(codigo)
+            configuracion.append(tipo)
+
+        else:
+            # Si ya existe una configuración, reemplazar sus valores
+            configuracion[0] = codigo
+            configuracion[1] = tipo
+
+        print("\nConfiguración guardada correctamente.\n")
+
+    else:
+        # Al cancelar, no modificar los valores guardados
+        print("\nConfiguración cancelada.\n")
+
+
+# ------------- FIN DE CONFIGURACIÓN DE CONTACTOS -------------
+
 def menu_registrar_contactos():
     while True:
         print("\n      REGISTRAR ÁREAS\n")
@@ -343,7 +425,7 @@ def menu_principal():
             case "1":
                 menu_regitrar_areas()
             case "2":
-                pass # Llamada a funcion de el menu de Configuración de lista de contactos
+                configurar_lista_contactos()
             case "3":
                 menu_registrar_contactos()
             case "4":
