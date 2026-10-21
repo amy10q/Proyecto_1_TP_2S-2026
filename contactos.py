@@ -7,6 +7,12 @@ TIPOS_TELEFONO = ("M", "Móvil", "C", "Casa", "T", "Trabajo", "O", "Otro")
 
 # ---------------------------------- INICIO REGISTRAR AREAS -------------------------------------------
 # ------------- FUNCIONES AUXILIARES DE ÁREAS -------------
+
+# Función: buscar_area
+# Propósito: Buscar un código dentro de la lista de áreas
+# Entrada (E): Lista de áreas y código que se desea buscar
+# Salida (S): Devuelve la posición del área si existe o -1 si no existe
+
 def buscar_area(areas, codigo): # devuelve la posición dentro de la lista
     # Busca un código dentro de la lista de áreas
     # Devuelve la posición si lo encuentra, o -1 si no existe
@@ -17,6 +23,12 @@ def buscar_area(areas, codigo): # devuelve la posición dentro de la lista
             posicion = i
 
     return posicion
+
+
+# Función: existe_area
+# Propósito: Comprobar si un código de área está registrado
+# Entrada (E): Lista de áreas y código que se desea comprobar
+# Salida (S): Devuelve True si el área existe o False si no existe
 
 def existe_area(areas, codigo):
      # Comprueba si el código se encuentra registrado 
@@ -32,6 +44,13 @@ def existe_area(areas, codigo):
     return existe
 
 # ------------- AGREGAR ÁREA -------------
+
+# Función: agregar_area
+# Propósito: Permitir registrar nuevas áreas en la lista
+# Entrada (E): Solicita el código del área, su nombre y la confirmación A/C
+# Salida (S): Agrega una tupla (codigo, nombre) a la lista areas si se acepta
+#             Muestra mensajes de error, confirmación o cancelación
+#             No devuelve un valor
 
 def agregar_area():
     while True:
@@ -88,9 +107,14 @@ def agregar_area():
         else:
             print("ERROR: El número de área debe contener solamente números.")
 
-# ------------- FIN DE AGREGAR ÁREA -------------
-
 # ------------- CONSULTAR ÁREA -------------
+
+# Función: consultar_area
+# Propósito: Permitir consultar la información de un área registrada
+# Entrada (E): Solicita el código del área y la confirmación A para continuar
+# Salida (S): Muestra el código y nombre del área si existe
+#             Muestra mensajes de error si los datos son incorrectos
+#             No modifica la lista de áreas ni devuelve un valor
 
 def consultar_area():
     while True:
@@ -133,9 +157,15 @@ def consultar_area():
         else:
             print("ERROR: El número de área debe contener solamente números.")
 
-# ------------- FIN DE CONSULTAR ÁREA -------------
-
 # ------------- MODIFICAR ÁREA -------------
+
+# Función: modificar_area
+# Propósito: Permitir modificar el nombre de un área registrada
+# Entrada (E): Solicita el código del área, el nuevo nombre y la
+#              confirmación A/C
+# Salida (S): Reemplaza la tupla del área con el nuevo nombre si
+#             el usuario acepta. Muestra mensajes de error o
+#             cancelación. No devuelve un valor
 
 def modificar_area():
     while True:
@@ -194,9 +224,15 @@ def modificar_area():
         else:
             print("ERROR: El número de área debe contener solamente números.")
 
-# ------------- FIN DE MODIFICAR ÁREA -------------
 
 # ------------- ELIMINAR ÁREA -------------
+
+# Función: eliminar_area
+# Propósito: Permitir eliminar un área registrada
+# Entrada (E): Solicita el código del área y la confirmación A/C
+# Salida (S): Elimina el área de la lista si el usuario acepta
+#             Muestra mensajes de error o cancelación
+#             No devuelve un valor
 
 def eliminar_area():
     while True:
@@ -245,9 +281,18 @@ def eliminar_area():
         else:
             print("ERROR: El número de área debe contener solamente números.")
 
-# ------------- FIN DE ELIMINAR ÁREA -------------
+# ---------------------------------- FIN REGISTRAR AREAS -------------------------------------------
 
 # ---------------------------------- INICIO MENU REGISTRAR AREAS -------------------------------------------
+
+# Función: menu_regitrar_areas
+# Propósito: Mostrar el menú de Registrar áreas y permitir
+#            seleccionar las operaciones disponibles
+# Entrada (E): Solicita al usuario una opción del menú
+# Salida (S): Ejecuta la función correspondiente a la opción elegida
+#             Muestra un error si la opción no es válida
+#             Regresa al menú principal cuando se selecciona 0
+#             No devuelve un valor
 
 def menu_regitrar_areas():
     while True:
@@ -278,6 +323,17 @@ def menu_regitrar_areas():
 
 
 # ------------- CONFIGURACIÓN DE CONTACTOS -------------
+
+# Función: configurar_lista_contactos
+# Propósito: Establecer el área y tipo de teléfono por omisión
+# Entrada (E): Solicita el código de un área registrada, el tipo
+#              de teléfono (M, C, T, O) y la confirmación A/C
+#              Utiliza las listas areas y configuracion
+# Salida (S): Guarda o actualiza los valores en configuracion
+#             cuando el usuario acepta
+#             Si cancela, conserva los valores anteriores
+#             Muestra mensajes de error o confirmación
+#             No devuelve un valor
 
 def configurar_lista_contactos():
     print("\n      CONFIGURACIÓN DE LA LISTA DE CONTACTOS\n")
@@ -354,9 +410,158 @@ def configurar_lista_contactos():
 
 # ------------- FIN DE CONFIGURACIÓN DE CONTACTOS -------------
 
+# ---------------------------------- INICIO REGISTRAR CONTACTOS -------------------------------------------
+# ------------- FUNCIONES AUXILIARES DE CONTACTOS -------------
+
+# Función: existe_contacto
+# Propósito: Comprobar si un contacto está registrado utilizando
+#            su número de teléfono y su código de área
+# Entrada (E): Lista de contactos, código de área y teléfono
+# Salida (S): Devuelve True si encuentra ambos datos en un mismo
+#             contacto o False si no existe
+
+def existe_contacto(contactos, area, telefono):
+    existe = False
+
+    for i in range(len(contactos)):
+        # [i] indica cuál contacto de la lista estamos revisando
+        # [0] es la posición del teléfono y [1] es la posición del área
+        if contactos[i][0] == telefono and contactos[i][1] == area:
+            existe = True       
+
+    return existe
+
+# ------------- BUSCAR CONTACTO -------------
+
+# Función: buscar_contacto
+# Propósito: Buscar un contacto por su número de teléfono y área.
+# Entrada (E): Lista de contactos, código de área y teléfono.
+# Salida (S): Devuelve la posición del contacto si existe
+#             o -1 si no está registrado.
+
+def buscar_contacto(contactos, area, telefono): # La posición (0, 1, 2...) o -1
+    posicion = -1
+
+    for i in range(len(contactos)):
+        # [i] indica cuál contacto de la lista estamos revisando
+        # [0] es la posición del teléfono y [1] es la posición del área
+        if contactos[i][0] == telefono and contactos[i][1] == area:
+            posicion = i
+
+    return posicion
+
+# ------------- AGREGAR CONTACTO -------------
+
+# Función: agregar_contacto
+# Propósito: Permitir registrar nuevos contactos
+# Entrada (E): Solicita los datos del contacto por teclado
+# Salida (S): Por ahora valida el teléfono, área y tipo
+#             Muestra mensajes de error cuando corresponde
+#             El registro completo todavía está pendiente
+#             No devuelve un valor
+
+def agregar_contacto():
+
+    # Comprobar que exista una configuración guardada
+    if len(configuracion) == 0:
+        print("Primero debe configurar la lista de contactos.")
+        return
+
+    # Repetir teléfono y área si se encuentra un contacto duplicado
+    while True:
+        print("\n      REGISTRAR CONTACTOS: AGREGAR\n")
+
+        # Solicitar y validar el teléfono
+        while True:
+            telefono = input("Teléfono: ").strip()
+
+            # Regresar al menú anterior
+            if telefono == "C":
+                return
+
+            # Validar que solamente contenga números
+            if telefono.isdigit():
+
+                # Validar la cantidad de dígitos
+                if len(telefono) >= 5 and len(telefono) <= 12:
+                    telefono = int(telefono)
+
+                    # Validar que sea mayor que cero
+                    if telefono > 0:
+                        break
+                    else:
+                        print("ERROR: El teléfono debe ser mayor que cero.")
+
+                else:
+                    print("ERROR: El teléfono debe tener entre 5 y 12 dígitos.")
+
+            else:
+                print("ERROR: El teléfono debe contener solamente números.")
+
+        # Solicitar y validar el área
+        while True:
+            area = input("Área: ").strip()
+
+            # Usar área por omisión cuando el campo esté vacío
+            if area == "":
+                area = str(configuracion[0])
+
+            # Validar que el área sea numérica
+            if area.isdigit():
+                area = int(area)
+
+                # Buscar el área registrada
+                posicion = buscar_area(areas, area)
+
+                if posicion == -1:
+                    print("ESTA ÁREA NO ESTÁ REGISTRADA, NO SE PUEDE SELECCIONAR")
+
+                else:
+                    print("Nombre del área:", areas[posicion][1])
+                    break
+
+            else:
+                print("ERROR: El código de área debe contener solamente números.")
+
+        # Verificar que la combinación de teléfono y área sea única
+        if existe_contacto(contactos, area, telefono):
+            print("ESTE TELÉFONO YA ESTÁ REGISTRADO, NO SE PUEDE AGREGAR")
+
+        else:
+            break
+
+    # Solicitar y validar el tipo de teléfono
+    while True:
+        tipo = input("Tipo de teléfono (M:Móvil, C:Casa, T:Trabajo, O:Otro): ").strip()
+
+        # Utilizar el tipo por omisión si el campo está vacío
+        if tipo == "":
+            tipo = configuracion[1]
+
+        # Comprobar que el tipo exista en TIPOS_TELEFONO
+        if (tipo == TIPOS_TELEFONO[0] or
+            tipo == TIPOS_TELEFONO[2] or
+            tipo == TIPOS_TELEFONO[4] or
+            tipo == TIPOS_TELEFONO[6]):
+            break
+
+        else:
+            print("ESTE TIPO DE TELÉFONO NO EXISTE, NO SE PUEDE SELECCIONAR")
+
+# ---------------------------------- MENU REGISTRAR CONTACTOS -------------------------------------------
+
+# Función: menu_registrar_contactos
+# Propósito: Mostrar el menú para administrar los contactos
+# Entrada (E): Solicita al usuario una opción del menú
+# Salida (S): Permite seleccionar las opciones de agregar,
+#             consultar, modificar y eliminar contactos
+#             Muestra un error si la opción no es válida
+#             Regresa al menú principal al seleccionar 0
+#             No devuelve un valor
+
 def menu_registrar_contactos():
     while True:
-        print("\n      REGISTRAR ÁREAS\n")
+        print("\n      REGISTRAR CONTACTOS\n")
         print("1. Agregar contactos")
         print("2. Consultar contactos")
         print("3. Modificar contactos")
@@ -367,7 +572,7 @@ def menu_registrar_contactos():
 
         match opcion:
             case "1":
-                pass # Llamada a funcion de el menu de agregar contactos
+                agregar_contacto()
             case "2":
                 pass # Llamada a funcion de el menu de Consultar contactos
             case "3":
@@ -375,14 +580,27 @@ def menu_registrar_contactos():
             case "4":
                 pass # Llamada a funcion de el menu de Eliminar contactos
             case "0":
-                print("Programa finalizado.")
                 break
             case _:
                 print("ERROR: OPCIÓN NO VÁLIDA")        
 
+# ---------------------------------- FIN MENU REGISTRAR CONTACTOS -------------------------------------------
+
+# ---------------------------------- MENU ADMINISTRAR GRUPOS DE CONTACTOS -------------------------------------------
+
+# Función: menu_administrar_grupos_de_contactos
+# Propósito: Mostrar el menú para administrar grupos de contactos
+# Entrada (E): Solicita al usuario una opción del menú
+# Salida (S): Muestra las opciones para agregar, modificar y eliminar
+#             grupos, además de agregar o eliminar contactos de ellos
+#             Muestra un error si la opción no es válida
+#             Regresa al menú principal al seleccionar 0
+#             Las operaciones de grupos aún no están implementadas
+#             No devuelve un valor
+
 def menu_administrar_grupos_de_contactos():
     while True:
-        print("\n      REGISTRAR ÁREAS\n")
+        print("\n      REGISTRAR GRUPOS DE CONTACTO\n")
         print("1. Agregar grupos")
         print("2. Agregar contactos a los grupos ")
         print("3. Modificar grupos")
@@ -401,12 +619,26 @@ def menu_administrar_grupos_de_contactos():
                 pass # Llamada a funcion de el menu de Modificar contactos
             case "4":
                 pass # Llamada a funcion de el menu de Eliminar contactos
+            case "5":
+                pass # Llamada a la función para eliminar contactos de los grupos
             case "0":
-                print("Programa finalizado.")
                 break
             case _:
                 print("ERROR: OPCIÓN NO VÁLIDA")  
-# ---------------------------------- MENU PRINCIPAL -------------------------------------------
+
+# ---------------------------------- FIN MENU ADMINISTRAR GRUPOS DE CONTACTOS -------------------------------------------
+
+#  ---------------------------------- MENU PRINCIPAL -------------------------------------------
+
+# Función: menu_principal
+# Propósito: Mostrar el menú principal y permitir al usuario
+#            seleccionar las diferentes funcionalidades del programa
+# Entrada (E): Solicita al usuario una opción del menú
+# Salida (S): Llama a la función correspondiente según la opción
+#             seleccionada y muestra un error si la opción no existe
+#             Finaliza el menú cuando el usuario selecciona 0
+#             No devuelve un valor
+
 def menu_principal():
     while True:
         print("\n      LISTA DIGITAL DE CONTACTOS\n")
@@ -442,4 +674,6 @@ def menu_principal():
             case _:
                 print("ERROR: OPCIÓN NO VÁLIDA")
 
-menu_principal()
+#  ---------------------------------- FIN MENU PRINCIPAL -------------------------------------------
+
+menu_principal() # Mostrará el menú principal al ejecutar el programa
