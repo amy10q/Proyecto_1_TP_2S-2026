@@ -1,3 +1,5 @@
+import re # Permite utilizar expresiones regulares para validar el correo
+import datetime # Permite comprobar que una fecha exista de verdad
 # ------------- DATOS -------------
 areas = []        # lista de tuplas (codigo, nombre)
 contactos = []    # lista de listas
@@ -454,10 +456,12 @@ def buscar_contacto(contactos, area, telefono): # La posición (0, 1, 2...) o -1
 
 # Función: agregar_contacto
 # Propósito: Permitir registrar nuevos contactos
-# Entrada (E): Solicita los datos del contacto por teclado
-# Salida (S): Por ahora valida el teléfono, área y tipo
-#             Muestra mensajes de error cuando corresponde
-#             El registro completo todavía está pendiente
+# Entrada (E): Solicita por teclado teléfono, área, tipo, nombre, correo,
+#              dirección, fecha de nacimiento, pasatiempos, notas y la
+#              confirmación A/C
+# Salida (S): Agrega a la lista contactos una lista con los 9 datos
+#             si el usuario acepta; si cancela, no agrega nada
+#             Muestra mensajes de error, confirmación o cancelación
 #             No devuelve un valor
 
 def agregar_contacto():
@@ -467,88 +471,204 @@ def agregar_contacto():
         print("Primero debe configurar la lista de contactos.")
         return
 
-    # Repetir teléfono y área si se encuentra un contacto duplicado
+    # Repetir la ventana de agregar hasta que el usuario escriba C en el teléfono
     while True:
-        print("\n      REGISTRAR CONTACTOS: AGREGAR\n")
-
-        # Solicitar y validar el teléfono
+        # Repetir teléfono y área si se encuentra un contacto duplicado
         while True:
-            telefono = input("Teléfono: ").strip()
+            print("\n      REGISTRAR CONTACTOS: AGREGAR\n")
 
-            # Regresar al menú anterior
-            if telefono == "C":
-                return
+            # Solicitar y validar el teléfono
+            while True:
+                telefono = input("Teléfono: ").strip()
 
-            # Validar que solamente contenga números
-            if telefono.isdigit():
+                # Regresar al menú anterior
+                if telefono == "C":
+                    return
 
-                # Validar la cantidad de dígitos
-                if len(telefono) >= 5 and len(telefono) <= 12:
-                    telefono = int(telefono)
+                # Validar que solamente contenga números
+                if telefono.isdigit():
 
-                    # Validar que sea mayor que cero
-                    if telefono > 0:
-                        break
+                    # Validar la cantidad de dígitos
+                    if len(telefono) >= 5 and len(telefono) <= 12:
+                        telefono = int(telefono)
+
+                        # Validar que sea mayor que cero
+                        if telefono > 0:
+                            break
+                        else:
+                            print("ERROR: El teléfono debe ser mayor que cero.")
+
                     else:
-                        print("ERROR: El teléfono debe ser mayor que cero.")
+                        print("ERROR: El teléfono debe tener entre 5 y 12 dígitos.")
 
                 else:
-                    print("ERROR: El teléfono debe tener entre 5 y 12 dígitos.")
+                    print("ERROR: El teléfono debe contener solamente números.")
+
+            # Solicitar y validar el área
+            while True:
+                area = input("Área: ").strip()
+
+                # Usar el área por omisión cuando el campo esté vacío
+                if area == "":
+                    area = str(configuracion[0])
+
+                # Validar que el área sea numérica
+                if area.isdigit():
+                    area = int(area)
+
+                    # Buscar el área registrada
+                    posicion = buscar_area(areas, area)
+
+                    if posicion == -1:
+                        print("ESTA ÁREA NO ESTÁ REGISTRADA, NO SE PUEDE SELECCIONAR")
+
+                    else:
+                        print("Nombre del área:", areas[posicion][1])
+                        break
+
+                else:
+                    print("ERROR: El código de área debe contener solamente números.")
+
+            # Verificar que la combinación de teléfono y área sea única
+            if existe_contacto(contactos, area, telefono):
+                print("ESTE TELÉFONO YA ESTÁ REGISTRADO, NO SE PUEDE AGREGAR")
 
             else:
-                print("ERROR: El teléfono debe contener solamente números.")
+                break
 
-        # Solicitar y validar el área
+        # Solicitar y validar el tipo de teléfono
         while True:
-            area = input("Área: ").strip()
+            tipo = input("Tipo de teléfono (M:Móvil, C:Casa, T:Trabajo, O:Otro): ").strip()
 
-            # Usar área por omisión cuando el campo esté vacío
-            if area == "":
-                area = str(configuracion[0])
+            # Utilizar el tipo por omisión si el campo está vacío
+            if tipo == "":
+                tipo = configuracion[1]
 
-            # Validar que el área sea numérica
-            if area.isdigit():
-                area = int(area)
+            # Comprobar que el tipo exista en TIPOS_TELEFONO
+            if (tipo == TIPOS_TELEFONO[0] or
+                tipo == TIPOS_TELEFONO[2] or
+                tipo == TIPOS_TELEFONO[4] or
+                tipo == TIPOS_TELEFONO[6]):
+                break
 
-                # Buscar el área registrada
-                posicion = buscar_area(areas, area)
+            else:
+                print("ESTE TIPO DE TELÉFONO NO EXISTE, NO SE PUEDE SELECCIONAR")
 
-                if posicion == -1:
-                    print("ESTA ÁREA NO ESTÁ REGISTRADA, NO SE PUEDE SELECCIONAR")
+        # Solicitar y validar el nombre del contacto
+        while True:
+            nombre = input("Nombre contacto: ").strip()
 
+            # Comprobar que tenga entre 1 y 50 caracteres
+            if len(nombre) >= 1 and len(nombre) <= 50:
+                break
+
+            else:
+                print("ERROR: El nombre debe tener entre 1 y 50 caracteres.")
+
+        # Solicitar y validar el correo electrónico
+        while True:
+            correo = input("Correo electrónico: ")
+
+            # Validar el formato parte1@parte2 sin espacios en blanco
+            if re.fullmatch(r"[^@\s]+@[^@\s]+", correo):
+                break
+
+            else:
+                print("ERROR: El correo debe tener el formato parte1@parte2, sin espacios.")
+
+        # Solicitar y validar la dirección física (puede quedar vacía)
+        while True:
+            direccion = input("Dirección física: ").strip()
+
+            # Comprobar que tenga como máximo 80 caracteres
+            if len(direccion) <= 80:
+                break
+
+            else:
+                print("ERROR: La dirección debe tener máximo 80 caracteres.")
+
+        # Solicitar y validar la fecha de nacimiento (dd/mm/aaaa)
+        # Si se deja vacía, la fecha queda como 0
+        while True:
+            fecha = input("Fecha de nacimiento (dd/mm/aaaa): ").strip()
+
+            # Sin fecha: el dato queda con 0
+            if fecha == "":
+                fecha = 0
+                break
+
+            # Separar el texto en día, mes y año usando la "/"
+            partes = fecha.split("/")
+
+            # Validar el formato: 3 partes con 2, 2 y 4 dígitos
+            if (len(partes) == 3 and
+                len(partes[0]) == 2 and partes[0].isdigit() and
+                len(partes[1]) == 2 and partes[1].isdigit() and
+                len(partes[2]) == 4 and partes[2].isdigit()):
+
+                dia = int(partes[0])
+                mes = int(partes[1])
+                anio = int(partes[2])
+
+                # El año 0000 significa "año desconocido"
+                # datetime no acepta el año 0, por eso se usa 2000 (bisiesto) solo para revisar día y mes
+                if anio == 0:
+                    anio_prueba = 2000
                 else:
-                    print("Nombre del área:", areas[posicion][1])
+                    anio_prueba = anio
+
+                # datetime da error (ValueError) si la fecha no existe
+                try:
+                    datetime.date(anio_prueba, mes, dia)
                     break
 
+                except ValueError:
+                    print("ERROR: La fecha no es válida.")
+
             else:
-                print("ERROR: El código de área debe contener solamente números.")
+                print("ERROR: La fecha debe tener el formato dd/mm/aaaa.")
 
-        # Verificar que la combinación de teléfono y área sea única
-        if existe_contacto(contactos, area, telefono):
-            print("ESTE TELÉFONO YA ESTÁ REGISTRADO, NO SE PUEDE AGREGAR")
+        # Solicitar y validar los pasatiempos (pueden quedar vacíos)
+        while True:
+            pasatiempos = input("Pasatiempos: ").strip()
+
+            # Comprobar que tengan como máximo 60 caracteres
+            if len(pasatiempos) <= 60:
+                break
+
+            else:
+                print("ERROR: Los pasatiempos deben tener máximo 60 caracteres.")
+
+        # Solicitar y validar las notas (pueden quedar vacías)
+        while True:
+            notas = input("Notas: ").strip()
+
+            # Comprobar que tengan como máximo 60 caracteres
+            if len(notas) <= 60:
+                break
+
+            else:
+                print("ERROR: Las notas deben tener máximo 60 caracteres.")
+
+        # Confirmar si desea registrar o cancelar el contacto
+        opcion = input("¿DESEA REGISTRAR EL CONTACTO? A-ACEPTAR C-CANCELAR: ")
+
+        while opcion != "A" and opcion != "C":
+            print("ERROR: OPCIÓN NO VÁLIDA.")
+            opcion = input("OPCIÓN A-ACEPTAR C-CANCELAR: ")
+
+        if opcion == "A":
+            # Crear el contacto como una lista con los 9 datos
+            contacto = [telefono, area, tipo, nombre, correo, direccion, fecha, pasatiempos, notas]
+            contactos.append(contacto)
+            print("Contacto registrado correctamente.")
 
         else:
-            break
+            print("Registro cancelado")
 
-    # Solicitar y validar el tipo de teléfono
-    while True:
-        tipo = input("Tipo de teléfono (M:Móvil, C:Casa, T:Trabajo, O:Otro): ").strip()
+        
 
-        # Utilizar el tipo por omisión si el campo está vacío
-        if tipo == "":
-            tipo = configuracion[1]
-
-        # Comprobar que el tipo exista en TIPOS_TELEFONO
-        if (tipo == TIPOS_TELEFONO[0] or
-            tipo == TIPOS_TELEFONO[2] or
-            tipo == TIPOS_TELEFONO[4] or
-            tipo == TIPOS_TELEFONO[6]):
-            break
-
-        else:
-            print("ESTE TIPO DE TELÉFONO NO EXISTE, NO SE PUEDE SELECCIONAR")
-
-# ---------------------------------- MENU REGISTRAR CONTACTOS -------------------------------------------
+  # ---------------------------------- MENU REGISTRAR CONTACTOS -------------------------------------------
 
 # Función: menu_registrar_contactos
 # Propósito: Mostrar el menú para administrar los contactos
