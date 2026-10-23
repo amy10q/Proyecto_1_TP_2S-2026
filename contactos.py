@@ -691,6 +691,99 @@ def agregar_contacto():
 
   # ---------------------------------- MENU REGISTRAR CONTACTOS -------------------------------------------
 
+# ------------- AGREGAR CONTACTO -------------
+
+# Función: consultar_contacto
+# Propósito: Permitir consultar los datos de un contacto registrado
+# Entrada (E): Solicita teléfono, área y la confirmación A para continuar
+# Salida (S): Muestra los nueve datos del contacto si existe
+#             Muestra un mensaje si el contacto no está registrado
+#             No modifica la lista contactos ni devuelve un valor
+
+def consultar_contacto():
+
+    # Comprobar que exista una configuración guardada
+    if len(configuracion) == 0:
+        print("Primero debe configurar la lista de contactos.")
+        return
+
+    # Repetir la ventana de consultar hasta que el usuario escriba C en el teléfono
+    while True:
+        # Repetir teléfono y área si el contacto no está registrado
+        while True:
+            print("\n      REGISTRAR CONTACTOS: CONSULTAR\n")
+
+            # Solicitar y validar el teléfono
+            while True:
+                telefono = input("Teléfono: ").strip()
+
+                # Regresar al menú anterior
+                if telefono == "C":
+                    return
+
+                # Validar que solamente contenga números
+                if telefono.isdigit():
+
+                    # Validar la cantidad de dígitos
+                    if len(telefono) >= 5 and len(telefono) <= 12:
+                        telefono = int(telefono)
+
+                        # Validar que sea mayor que cero
+                        if telefono > 0:
+                            break
+                        else:
+                            print("ERROR: El teléfono debe ser mayor que cero.")
+
+                    else:
+                        print("ERROR: El teléfono debe tener entre 5 y 12 dígitos.")
+
+                else:
+                    print("ERROR: El teléfono debe contener solamente números.")
+
+            # Solicitar y validar el área
+            while True:
+                area = input("Área: ").strip()
+
+                # Usar el área por omisión cuando el campo esté vacío
+                if area == "":
+                    area = str(configuracion[0])
+
+                # Validar que el área sea numérica
+                if area.isdigit():
+                    area = int(area)
+                    break
+
+                else:
+                    print("ERROR: El código de área debe contener solamente números.")
+
+            # Buscar el contacto por teléfono y área
+            posicion = buscar_contacto(contactos, area, telefono)
+
+            # Si no está registrado, se vuelven a pedir teléfono y área
+            if posicion == -1:
+                print("ESTE CONTACTO NO ESTA REGISTRADO, NO SE PUEDE CONSULTAR")
+
+            else:
+                break
+
+        # Mostrar los datos del contacto 
+        print("Teléfono:", contactos[posicion][0])
+        print("Área:", contactos[posicion][1])
+        print("Tipo de teléfono:", contactos[posicion][2])
+        print("Nombre:", contactos[posicion][3])
+        print("Correo electrónico:", contactos[posicion][4])
+        print("Dirección física:", contactos[posicion][5])
+        print("Fecha de nacimiento:", contactos[posicion][6])
+        print("Pasatiempos:", contactos[posicion][7])
+        print("Notas:", contactos[posicion][8])
+
+        # Aceptar la consulta para continuar
+        opcion = input("OPCIÓN A-ACEPTAR: ")
+
+        while opcion != "A":
+            print("ERROR: OPCIÓN NO VÁLIDA.")
+            opcion = input("OPCIÓN A-ACEPTAR: ")
+
 # Función: menu_registrar_contactos
 # Propósito: Mostrar el menú para administrar los contactos
 # Entrada (E): Solicita al usuario una opción del menú
@@ -715,7 +808,7 @@ def menu_registrar_contactos():
             case "1":
                 agregar_contacto()
             case "2":
-                pass # Llamada a funcion de el menu de Consultar contactos
+                consultar_contacto()
             case "3":
                 pass # Llamada a funcion de el menu de Modificar contactos
             case "4":
