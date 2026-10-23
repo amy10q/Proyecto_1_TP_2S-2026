@@ -45,6 +45,23 @@ def existe_area(areas, codigo):
 
     return existe
 
+# Función: area_en_uso
+# Propósito: Comprobar si algún contacto está usando un código de área
+# Entrada (E): Lista de contactos y código de área que se desea revisar
+# Salida (S): Devuelve True si al menos un contacto usa el área
+#             o False si ningún contacto la usa
+
+def area_en_uso(contactos, codigo):
+    en_uso = False
+
+    for i in range(len(contactos)):
+        # [i] indica cuál contacto de la lista estamos revisando
+        # [1] es la posición del área dentro del contacto
+        if contactos[i][1] == codigo:
+            en_uso = True
+
+    return en_uso
+
 # ------------- AGREGAR ÁREA -------------
 
 # Función: agregar_area
@@ -235,6 +252,7 @@ def modificar_area():
 # Salida (S): Elimina el área de la lista si el usuario acepta
 #             Muestra mensajes de error o cancelación
 #             No devuelve un valor
+#             No elimina el área si algún contacto la está usando
 
 def eliminar_area():
     while True:
@@ -256,6 +274,9 @@ def eliminar_area():
 
                 if posicion == -1:
                     print("ALERTA: El área no está registrada.")
+                 # Si algún contacto usa el área, no se puede eliminar
+                elif area_en_uso(contactos, codigo):
+                    print("EN ESTA ÁREA HAY CONTACTOS REGISTRADOS, NO SE PUEDE ELIMINAR")
 
                 else:
                     print("Código de área:", areas[posicion][0])
