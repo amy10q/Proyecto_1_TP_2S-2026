@@ -91,7 +91,7 @@ def agregar_area():
 
                 # Revisar si el código ya existe
                 if existe_area(areas, codigo):
-                    print("ALERTA: El área ya está registrada.")
+                    print("ESTA ÁREA YA ESTÁ REGISTRADA, NO SE PUEDE AGREGAR")
 
                 else:
                     nombre = input("Ingrese el nombre del área: ")
@@ -157,7 +157,7 @@ def consultar_area():
 
                 # Comprobar si el área está registrada
                 if posicion == -1:
-                    print("ALERTA: El área no está registrada, no se puede consultar.")
+                    print("ESTA ÁREA NO ESTÁ REGISTRADA, NO SE PUEDE CONSULTAR")
 
                 else:
                     print("Código:", areas[posicion][0])
@@ -205,7 +205,7 @@ def modificar_area():
                 posicion = buscar_area(areas, codigo)
 
                 if posicion == -1:
-                    print("ALERTA: El área no está registrada.")
+                    print("ESTA ÁREA NO ESTÁ REGISTRADA, NO SE PUEDE MODIFICAR")
 
                 else:
                     print("Código de área:", areas[posicion][0])
@@ -273,7 +273,7 @@ def eliminar_area():
                 posicion = buscar_area(areas, codigo)
 
                 if posicion == -1:
-                    print("ALERTA: El área no está registrada.")
+                    print("ESTA ÁREA NO ESTÁ REGISTRADA, NO SE PUEDE ELIMINAR")
                  # Si algún contacto usa el área, no se puede eliminar
                 elif area_en_uso(contactos, codigo):
                     print("EN ESTA ÁREA HAY CONTACTOS REGISTRADOS, NO SE PUEDE ELIMINAR")
