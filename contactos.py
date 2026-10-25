@@ -5,6 +5,8 @@ areas = []        # lista de tuplas (codigo, nombre)
 contactos = []    # lista de listas
 configuracion = [] # Guardar el area y el tipo de telefono por omision
 TIPOS_TELEFONO = ("M", "Móvil", "C", "Casa", "T", "Trabajo", "O", "Otro")
+grupos = []                 # lista con los nombres de los grupos (strings)
+contactos_por_grupo = []    # lista de listas de tuplas (telefono, area)
 # ------------- FIN DATOS -------------
 
 # ---------------------------------- INICIO REGISTRAR AREAS -------------------------------------------
@@ -1162,6 +1164,84 @@ def menu_registrar_contactos():
             case _:
                 print("ERROR: OPCIÓN NO VÁLIDA")        
 
+# ---------------------------------- INICIO ADMINISTRAR GRUPOS DE CONTACTOS -------------------------------------------
+# ------------- FUNCIONES AUXILIARES DE GRUPOS -------------
+
+# Función: buscar_grupo
+# Propósito: Buscar un grupo por su nombre dentro de la lista de grupos
+# Entrada (E): Lista de grupos y nombre del grupo que se desea buscar
+# Salida (S): Devuelve la posición del grupo si existe
+#             o -1 si no está registrado
+
+def buscar_grupo(grupos, nombre):
+    posicion = -1
+
+    for i in range(len(grupos)):
+        # [i] indica cuál grupo de la lista se está revisando
+        if grupos[i] == nombre:
+            posicion = i
+
+    return posicion
+
+# ------------- AGREGAR GRUPO -------------
+
+# Función: agregar_grupo
+# Propósito: Permitir registrar nuevos grupos de contactos
+# Entrada (E): Solicita el nombre del grupo y la confirmación A/C
+# Salida (S): Agrega el nombre a la lista grupos y una lista vacía a
+#             contactos_por_grupo si el usuario acepta
+#             Si cancela, no agrega nada
+#             Muestra mensajes de error, confirmación o cancelación
+#             No devuelve un valor
+
+def agregar_grupo():
+
+    # Repetir la ventana de agregar hasta que el usuario escriba C
+    while True:
+        print("\n      ADMINISTRAR GRUPOS DE CONTACTOS")
+        print("      Agregar grupos\n")
+
+        # Solicitar y validar el nombre del grupo
+        while True:
+            nombre = input("Nombre del grupo: ").strip()
+
+            # Regresar al menú anterior
+            if nombre == "C":
+                return
+
+            # Comprobar que tenga entre 1 y 40 caracteres
+            if len(nombre) >= 1 and len(nombre) <= 40:
+
+                # Comprobar que el grupo no esté registrado
+                posicion = buscar_grupo(grupos, nombre)
+
+                if posicion == -1:
+                    break
+
+                else:
+                    print("ESTE GRUPO YA ESTÁ REGISTRADO, NO SE PUEDE AGREGAR")
+
+            else:
+                print("ERROR: El nombre del grupo debe tener entre 1 y 40 caracteres.")
+
+        # Confirmar si desea registrar o cancelar el grupo
+        opcion = input("OPCIÓN A-ACEPTAR C-CANCELAR: ")
+
+        while opcion != "A" and opcion != "C":
+            print("ERROR: OPCIÓN NO VÁLIDA.")
+            opcion = input("OPCIÓN A-ACEPTAR C-CANCELAR: ")
+
+        if opcion == "A":
+            # Las dos listas se actualizan juntas para mantener la relación 1:1
+            grupos.append(nombre)
+            contactos_por_grupo.append([])
+            print("Grupo registrado correctamente.")
+
+        else:
+            print("Registro cancelado")
+
+# ---------------------------------- FIN ADMINISTRAR GRUPOS DE CONTACTOS -------------------------------------------
+
 # ---------------------------------- FIN MENU REGISTRAR CONTACTOS -------------------------------------------
 
 # ---------------------------------- MENU ADMINISTRAR GRUPOS DE CONTACTOS -------------------------------------------
@@ -1178,7 +1258,7 @@ def menu_registrar_contactos():
 
 def menu_administrar_grupos_de_contactos():
     while True:
-        print("\n      REGISTRAR GRUPOS DE CONTACTO\n")
+        print("\n      ADMINISTRAR GRUPOS DE CONTACTOS\n")
         print("1. Agregar grupos")
         print("2. Agregar contactos a los grupos ")
         print("3. Modificar grupos")
@@ -1190,7 +1270,7 @@ def menu_administrar_grupos_de_contactos():
 
         match opcion:
             case "1":
-                pass # Llamada a funcion de el menu de agregar contactos
+                agregar_grupo()
             case "2":
                 pass # Llamada a funcion de el menu de Consultar contactos
             case "3":
