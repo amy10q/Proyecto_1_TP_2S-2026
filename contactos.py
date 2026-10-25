@@ -687,9 +687,6 @@ def agregar_contacto():
         else:
             print("Registro cancelado")
 
-        
-
-  # ---------------------------------- MENU REGISTRAR CONTACTOS -------------------------------------------
 
 # ------------- CONSULTAR CONTACTO -------------
 
@@ -784,6 +781,8 @@ def consultar_contacto():
             print("ERROR: OPCIÓN NO VÁLIDA.")
             opcion = input("OPCIÓN A-ACEPTAR: ")
 
+# ------------- ELIMINAR CONTACTO -------------
+
 # Función: eliminar_contacto
 # Propósito: Permitir eliminar un contacto registrado
 # Entrada (E): Solicita teléfono, área, la opción A/C y la confirmación SI/NO
@@ -791,8 +790,6 @@ def consultar_contacto():
 #             y confirma; si cancela, no elimina nada
 #             Muestra mensajes de error, confirmación o cancelación
 #             No devuelve un valor
-
-# ------------- ELIMINAR CONTACTO -------------
 
 def eliminar_contacto():
 
@@ -899,6 +896,238 @@ def eliminar_contacto():
         else:
             print("Eliminación cancelada")
 
+# ------------- MODIFICAR CONTACTO -------------
+
+# Función: modificar_contacto
+# Propósito: Permitir modificar el nombre, correo, dirección, fecha de
+#            nacimiento, pasatiempos y notas de un contacto registrado
+#            El teléfono, el área y el tipo de teléfono no se modifican
+# Entrada (E): Solicita el teléfono y el área del contacto, el nuevo valor
+#              de cada dato (con Enter se conserva el valor actual) y la
+#              confirmación A/C
+# Salida (S): Reemplaza los datos del contacto en la lista contactos si el
+#             usuario acepta. Si cancela, el contacto no cambia
+#             Muestra mensajes de error, confirmación o cancelación
+#             No devuelve un valor
+
+def modificar_contacto():
+
+    # Comprobar que exista una configuración guardada
+    if len(configuracion) == 0:
+        print("Primero debe configurar la lista de contactos.")
+        return
+
+    # Repetir la ventana de modificar hasta que el usuario escriba C en el teléfono
+    while True:
+        # Repetir teléfono y área si el contacto no está registrado
+        while True:
+            print("\n      REGISTRAR CONTACTOS: MODIFICAR\n")
+
+            # Solicitar y validar el teléfono
+            while True:
+                telefono = input("Teléfono: ").strip()
+
+                # Regresar al menú anterior
+                if telefono == "C":
+                    return
+
+                # Validar que solamente contenga números
+                if telefono.isdigit():
+
+                    # Validar la cantidad de dígitos
+                    if len(telefono) >= 5 and len(telefono) <= 12:
+                        telefono = int(telefono)
+
+                        # Validar que sea mayor que cero
+                        if telefono > 0:
+                            break
+                        else:
+                            print("ERROR: El teléfono debe ser mayor que cero.")
+
+                    else:
+                        print("ERROR: El teléfono debe tener entre 5 y 12 dígitos.")
+
+                else:
+                    print("ERROR: El teléfono debe contener solamente números.")
+
+            # Solicitar y validar el área
+            while True:
+                area = input("Área: ").strip()
+
+                # Usar el área por omisión cuando el campo esté vacío
+                if area == "":
+                    area = str(configuracion[0])
+
+                # Validar que el área sea numérica
+                if area.isdigit():
+                    area = int(area)
+                    break
+
+                else:
+                    print("ERROR: El código de área debe contener solamente números.")
+
+            # Buscar el contacto por teléfono y área
+            posicion = buscar_contacto(contactos, area, telefono)
+
+            # Si no está registrado, se vuelven a pedir teléfono y área
+            if posicion == -1:
+                print("ESTE CONTACTO NO ESTÁ REGISTRADO, NO SE PUEDE MODIFICAR")
+
+            else:
+                break
+
+        # Mostrar los datos que no se pueden modificar
+        posicion_area = buscar_area(areas, contactos[posicion][1])
+        print("Nombre del área:", areas[posicion_area][1])
+        print("Tipo de teléfono:", contactos[posicion][2])
+
+        # Nombre del contacto: se muestra el actual y se pide el nuevo valor
+        print("Nombre contacto:", contactos[posicion][3])
+
+        while True:
+            nuevo_nombre = input("MODIFICACIÓN: ").strip()
+
+            # Si no escribe nada, se conserva el valor anterior
+            if nuevo_nombre == "":
+                nuevo_nombre = contactos[posicion][3]
+
+            # Comprobar que tenga entre 1 y 50 caracteres
+            if len(nuevo_nombre) >= 1 and len(nuevo_nombre) <= 50:
+                break
+
+            else:
+                print("ERROR: El nombre debe tener entre 1 y 50 caracteres.")
+
+        # Correo electrónico: se muestra el actual y se pide el nuevo valor
+        print("Correo electrónico:", contactos[posicion][4])
+
+        while True:
+            nuevo_correo = input("MODIFICACIÓN: ")
+
+            # Si no escribe nada, se conserva el valor anterior
+            if nuevo_correo == "":
+                nuevo_correo = contactos[posicion][4]
+
+            # Validar el formato parte1@parte2 sin espacios en blanco
+            if re.fullmatch(r"[^@\s]+@[^@\s]+", nuevo_correo):
+                break
+
+            else:
+                print("ERROR: El correo debe tener el formato parte1@parte2, sin espacios.")
+
+        # Dirección física: se muestra la actual y se pide el nuevo valor
+        print("Dirección física:", contactos[posicion][5])
+
+        while True:
+            nueva_direccion = input("MODIFICACIÓN: ").strip()
+
+            # Si no escribe nada, se conserva el valor anterior
+            if nueva_direccion == "":
+                nueva_direccion = contactos[posicion][5]
+
+            # Comprobar que tenga como máximo 80 caracteres
+            if len(nueva_direccion) <= 80:
+                break
+
+            else:
+                print("ERROR: La dirección debe tener máximo 80 caracteres.")
+
+        # Fecha de nacimiento: se muestra la actual y se pide el nuevo valor
+        print("Fecha de nacimiento:", contactos[posicion][6])
+
+        while True:
+            nueva_fecha = input("MODIFICACIÓN: ").strip()
+
+            # Si no escribe nada, se conserva el valor anterior
+            if nueva_fecha == "":
+                nueva_fecha = contactos[posicion][6]
+                break
+
+            # Separar el texto en día, mes y año usando la "/"
+            partes = nueva_fecha.split("/")
+
+            # Validar el formato: 3 partes con 2, 2 y 4 dígitos
+            if (len(partes) == 3 and
+                len(partes[0]) == 2 and partes[0].isdigit() and
+                len(partes[1]) == 2 and partes[1].isdigit() and
+                len(partes[2]) == 4 and partes[2].isdigit()):
+
+                dia = int(partes[0])
+                mes = int(partes[1])
+                anio = int(partes[2])
+
+                # El año 0000 significa "año desconocido"
+                # datetime no acepta el año 0, por eso se usa 2000 solo para revisar día y mes
+                if anio == 0:
+                    anio_prueba = 2000
+                else:
+                    anio_prueba = anio
+
+                # datetime da error (ValueError) si la fecha no existe
+                try:
+                    datetime.date(anio_prueba, mes, dia)
+                    break
+
+                except ValueError:
+                    print("ERROR: La fecha no es válida.")
+
+            else:
+                print("ERROR: La fecha debe tener el formato dd/mm/aaaa.")
+
+        # Pasatiempos: se muestran los actuales y se pide el nuevo valor
+        print("Pasatiempos:", contactos[posicion][7])
+
+        while True:
+            nuevos_pasatiempos = input("MODIFICACIÓN: ").strip()
+
+            # Si no escribe nada, se conserva el valor anterior
+            if nuevos_pasatiempos == "":
+                nuevos_pasatiempos = contactos[posicion][7]
+
+            # Comprobar que tengan como máximo 60 caracteres
+            if len(nuevos_pasatiempos) <= 60:
+                break
+
+            else:
+                print("ERROR: Los pasatiempos deben tener máximo 60 caracteres.")
+
+        # Notas: se muestran las actuales y se pide el nuevo valor
+        print("Notas:", contactos[posicion][8])
+
+        while True:
+            nuevas_notas = input("MODIFICACIÓN: ").strip()
+
+            # Si no escribe nada, se conserva el valor anterior
+            if nuevas_notas == "":
+                nuevas_notas = contactos[posicion][8]
+
+            # Comprobar que tengan como máximo 60 caracteres
+            if len(nuevas_notas) <= 60:
+                break
+
+            else:
+                print("ERROR: Las notas deben tener máximo 60 caracteres.")
+        # Confirmar y guardar los cambios
+        opcion = input("OPCIÓN A-ACEPTAR C-CANCELAR: ")
+
+        while opcion != "A" and opcion != "C":
+            print("ERROR: OPCIÓN NO VÁLIDA.")
+            opcion = input("OPCIÓN A-ACEPTAR C-CANCELAR: ")
+
+        if opcion == "A":
+            contactos[posicion][3] = nuevo_nombre
+            contactos[posicion][4] = nuevo_correo
+            contactos[posicion][5] = nueva_direccion
+            contactos[posicion][6] = nueva_fecha
+            contactos[posicion][7] = nuevos_pasatiempos
+            contactos[posicion][8] = nuevas_notas
+            print("Contacto modificado correctamente.")
+
+        else:
+            print("Modificación cancelada")
+
+# ---------------------------------- MENU REGISTRAR CONTACTOS -------------------------------------------
+
 # Función: menu_registrar_contactos
 # Propósito: Mostrar el menú para administrar los contactos
 # Entrada (E): Solicita al usuario una opción del menú
@@ -925,7 +1154,7 @@ def menu_registrar_contactos():
             case "2":
                 consultar_contacto()
             case "3":
-                pass # Llamada a funcion de el menu de Modificar contactos
+                modificar_contacto()
             case "4":
                 eliminar_contacto()
             case "0":
