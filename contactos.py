@@ -1378,6 +1378,68 @@ def agregar_contacto_a_grupo():
         else:
             print("Operación cancelada")
 
+# ------------- ELIMINAR GRUPO -------------
+
+# Función: eliminar_grupo
+# Propósito: Permitir eliminar un grupo junto con su lista de contactos
+# Entrada (E): Solicita el nombre del grupo, la opción A/C y la
+#              confirmación SI/NO
+# Salida (S): Elimina el nombre del grupo de la lista grupos y su lista
+#             de contactos de contactos_por_grupo si el usuario acepta y
+#             confirma; si cancela, no elimina nada
+#             Muestra mensajes de error, confirmación o cancelación
+#             No devuelve un valor
+
+def eliminar_grupo():
+
+    # Repetir la ventana de eliminar hasta que el usuario escriba C
+    while True:
+        print("\n      ADMINISTRAR GRUPOS DE CONTACTOS")
+        print("      Eliminar grupos\n")
+
+        # Solicitar y validar el nombre del grupo
+        while True:
+            nombre = input("Nombre del grupo: ").strip()
+
+            # Regresar al menú anterior
+            if nombre == "C":
+                return
+
+            posicion_grupo = buscar_grupo(grupos, nombre)
+
+            if posicion_grupo == -1:
+                print("ESTE GRUPO NO ESTÁ REGISTRADO, NO SE PUEDE ELIMINAR")
+
+            else:
+                break
+
+        # Aceptar o cancelar la eliminación
+        opcion = input("OPCIÓN A-ACEPTAR C-CANCELAR: ")
+
+        while opcion != "A" and opcion != "C":
+            print("ERROR: OPCIÓN NO VÁLIDA.")
+            opcion = input("OPCIÓN A-ACEPTAR C-CANCELAR: ")
+
+        if opcion == "A":
+            # Pedir confirmación antes de eliminar
+            confirmacion = input("CONFIRMA LA ELIMINACIÓN (SI/NO): ")
+
+            while confirmacion != "SI" and confirmacion != "NO":
+                print("ERROR: OPCIÓN NO VÁLIDA.")
+                confirmacion = input("CONFIRMA LA ELIMINACIÓN (SI/NO): ")
+
+            if confirmacion == "SI":
+                # Se elimina de las dos listas con la misma posición (relación 1:1)
+                grupos.pop(posicion_grupo)
+                contactos_por_grupo.pop(posicion_grupo)
+                print("Grupo eliminado correctamente.")
+
+            else:
+                print("Eliminación cancelada")
+
+        else:
+            print("Eliminación cancelada")
+
 # ---------------------------------- FIN ADMINISTRAR GRUPOS DE CONTACTOS -------------------------------------------
 
 # ---------------------------------- MENU ADMINISTRAR GRUPOS DE CONTACTOS -------------------------------------------
@@ -1412,7 +1474,7 @@ def menu_administrar_grupos_de_contactos():
             case "3":
                 pass # Llamada a funcion de el menu de Modificar contactos
             case "4":
-                pass # Llamada a funcion de el menu de Eliminar contactos
+                eliminar_grupo()
             case "5":
                 pass # Llamada a la función para eliminar contactos de los grupos
             case "0":
