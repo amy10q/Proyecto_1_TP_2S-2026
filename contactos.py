@@ -1164,6 +1164,8 @@ def menu_registrar_contactos():
             case _:
                 print("ERROR: OPCIÓN NO VÁLIDA")        
 
+# ---------------------------------- FIN MENU REGISTRAR CONTACTOS -------------------------------------------
+
 # ---------------------------------- INICIO ADMINISTRAR GRUPOS DE CONTACTOS -------------------------------------------
 # ------------- FUNCIONES AUXILIARES DE GRUPOS -------------
 
@@ -1179,6 +1181,23 @@ def buscar_grupo(grupos, nombre):
     for i in range(len(grupos)):
         # [i] indica cuál grupo de la lista se está revisando
         if grupos[i] == nombre:
+            posicion = i
+
+    return posicion
+
+# Función: buscar_contacto_en_grupo
+# Propósito: Buscar un contacto dentro de la lista de contactos de un grupo
+# Entrada (E): Lista de tuplas (teléfono, área) de un grupo, teléfono y área
+# Salida (S): Devuelve la posición del contacto dentro del grupo si existe
+#             o -1 si el contacto no está en el grupo
+
+def buscar_contacto_en_grupo(contactos_del_grupo, telefono, area):
+    posicion = -1
+
+    for i in range(len(contactos_del_grupo)):
+        # [i] indica cuál tupla del grupo estamos revisando
+        # [0] es el teléfono y [1] es el área dentro de la tupla
+        if contactos_del_grupo[i][0] == telefono and contactos_del_grupo[i][1] == area:
             posicion = i
 
     return posicion
@@ -1240,9 +1259,126 @@ def agregar_grupo():
         else:
             print("Registro cancelado")
 
-# ---------------------------------- FIN ADMINISTRAR GRUPOS DE CONTACTOS -------------------------------------------
+# ------------- AGREGAR CONTACTO A UN GRUPO -------------
 
-# ---------------------------------- FIN MENU REGISTRAR CONTACTOS -------------------------------------------
+# Función: agregar_contacto_a_grupo
+# Propósito: Permitir agregar un contacto registrado a un grupo existente
+# Entrada (E): Solicita el nombre del grupo, el teléfono y el área del
+#              contacto, y la confirmación A/C
+# Salida (S): Agrega la tupla (teléfono, área) a la lista de contactos
+#             del grupo en contactos_por_grupo si el usuario acepta
+#             Si cancela, no agrega nada
+#             Muestra mensajes de error, confirmación o cancelación
+#             No devuelve un valor
+
+def agregar_contacto_a_grupo():
+
+    # Comprobar que exista una configuración guardada
+    if len(configuracion) == 0:
+        print("Primero debe configurar la lista de contactos.")
+        return
+
+    # Repetir la ventana hasta que el usuario escriba C en el nombre del grupo
+    while True:
+        print("\n      ADMINISTRAR GRUPOS DE CONTACTOS")
+        print("      Agregar contactos a los grupos\n")
+
+        # Solicitar y validar el nombre del grupo
+        while True:
+            nombre_grupo = input("Nombre del grupo: ").strip()
+
+            # Regresar al menú anterior
+            if nombre_grupo == "C":
+                return
+
+            posicion_grupo = buscar_grupo(grupos, nombre_grupo)
+
+            if posicion_grupo == -1:
+                print("ESTE GRUPO NO EXISTE, NO PUEDE AGREGARLE CONTACTOS")
+
+            else:
+                break
+
+        # Repetir teléfono y área si el contacto no existe o ya está en el grupo
+        while True:
+
+            # Solicitar y validar el teléfono
+            while True:
+                telefono = input("Teléfono: ").strip()
+
+                # Regresar al menú anterior
+                if telefono == "C":
+                    return
+
+                # Validar que solamente contenga números
+                if telefono.isdigit():
+
+                    # Validar la cantidad de dígitos
+                    if len(telefono) >= 5 and len(telefono) <= 12:
+                        telefono = int(telefono)
+
+                        # Validar que sea mayor que cero
+                        if telefono > 0:
+                            break
+                        else:
+                            print("ERROR: El teléfono debe ser mayor que cero.")
+
+                    else:
+                        print("ERROR: El teléfono debe tener entre 5 y 12 dígitos.")
+
+                else:
+                    print("ERROR: El teléfono debe contener solamente números.")
+
+            # Solicitar y validar el área
+            while True:
+                area = input("Área: ").strip()
+
+                # Usar el área por omisión cuando el campo esté vacío
+                if area == "":
+                    area = str(configuracion[0])
+
+                # Validar que el área sea numérica
+                if area.isdigit():
+                    area = int(area)
+                    break
+
+                else:
+                    print("ERROR: El código de área debe contener solamente números.")
+
+            # Buscar el contacto por teléfono y área
+            posicion = buscar_contacto(contactos, area, telefono)
+
+            if posicion == -1:
+                print("ESTE CONTACTO NO EXISTE, NO PUEDE AGREGARLO AL GRUPO")
+
+            # Los grupos no pueden tener contactos repetidos
+            elif buscar_contacto_en_grupo(contactos_por_grupo[posicion_grupo], telefono, area) != -1:
+                print("ESTE CONTACTO YA ESTÁ EN EL GRUPO, NO SE PUEDE AGREGAR")
+
+            else:
+                break
+
+        # Mostrar el nombre del área y el nombre del contacto
+        posicion_area = buscar_area(areas, area)
+        print("Nombre del área:", areas[posicion_area][1])
+        print("Nombre contacto:", contactos[posicion][3])
+
+        # Confirmar si desea agregar o cancelar
+        opcion = input("OPCIÓN A-ACEPTAR C-CANCELAR: ")
+
+        while opcion != "A" and opcion != "C":
+            print("ERROR: OPCIÓN NO VÁLIDA.")
+            opcion = input("OPCIÓN A-ACEPTAR C-CANCELAR: ")
+
+        if opcion == "A":
+            # Se guarda la tupla en la lista del grupo (misma posición que en grupos)
+            contactos_por_grupo[posicion_grupo].append((telefono, area))
+            print("Contacto agregado al grupo correctamente.")
+
+        else:
+            print("Operación cancelada")
+
+# ---------------------------------- FIN ADMINISTRAR GRUPOS DE CONTACTOS -------------------------------------------
 
 # ---------------------------------- MENU ADMINISTRAR GRUPOS DE CONTACTOS -------------------------------------------
 
@@ -1272,7 +1408,7 @@ def menu_administrar_grupos_de_contactos():
             case "1":
                 agregar_grupo()
             case "2":
-                pass # Llamada a funcion de el menu de Consultar contactos
+                agregar_contacto_a_grupo()
             case "3":
                 pass # Llamada a funcion de el menu de Modificar contactos
             case "4":
