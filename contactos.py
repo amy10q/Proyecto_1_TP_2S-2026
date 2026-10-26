@@ -878,26 +878,28 @@ def eliminar_contacto():
             opcion = input("OPCIÓN A-ACEPTAR C-CANCELAR: ")
 
         if opcion == "A":
-            # PENDIENTE (Grupos): aquí se rechazará la eliminación
-            # si el contacto pertenece a algún grupo
 
-            # Pedir confirmación antes de eliminar
-            confirmacion = input("CONFIRMA LA ELIMINACIÓN (SI/NO): ")
-
-            while confirmacion != "SI" and confirmacion != "NO":
-                print("ERROR: OPCIÓN NO VÁLIDA.")
-                confirmacion = input("CONFIRMA LA ELIMINACIÓN (SI/NO): ")
-
-            if confirmacion == "SI":
-                contactos.pop(posicion)
-                print("Contacto eliminado correctamente.")
+            # No se puede eliminar un contacto que pertenece a algún grupo
+            if contacto_en_algun_grupo(contactos_por_grupo, telefono, area):
+                print("ESTE CONTACTO PERTENECE A UN GRUPO, NO SE PUEDE ELIMINAR")
 
             else:
-                print("Eliminación cancelada")
+                # Pedir confirmación antes de eliminar
+                confirmacion = input("CONFIRMA LA ELIMINACIÓN (SI/NO): ")
+
+                while confirmacion != "SI" and confirmacion != "NO":
+                    print("ERROR: OPCIÓN NO VÁLIDA.")
+                    confirmacion = input("CONFIRMA LA ELIMINACIÓN (SI/NO): ")
+
+                if confirmacion == "SI":
+                    contactos.pop(posicion)
+                    print("Contacto eliminado correctamente.")
+
+                else:
+                    print("Eliminación cancelada")
 
         else:
             print("Eliminación cancelada")
-
 # ------------- MODIFICAR CONTACTO -------------
 
 # Función: modificar_contacto
@@ -1201,6 +1203,22 @@ def buscar_contacto_en_grupo(contactos_del_grupo, telefono, area):
             posicion = i
 
     return posicion
+
+# Función: contacto_en_algun_grupo
+# Propósito: Comprobar si un contacto pertenece a al menos un grupo
+# Entrada (E): Lista contactos_por_grupo, teléfono y área del contacto
+# Salida (S): Devuelve True si el contacto está en algún grupo
+#             o False si no está en ninguno
+
+def contacto_en_algun_grupo(contactos_por_grupo, telefono, area):
+    en_grupo = False
+
+    for i in range(len(contactos_por_grupo)):
+        # [i] indica cuál grupo (lista de tuplas) se está revisando
+        if buscar_contacto_en_grupo(contactos_por_grupo[i], telefono, area) != -1:
+            en_grupo = True
+
+    return en_grupo
 
 # ------------- AGREGAR GRUPO -------------
 
