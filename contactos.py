@@ -1440,6 +1440,135 @@ def eliminar_grupo():
         else:
             print("Eliminación cancelada")
 
+# ------------- ELIMINAR CONTACTO DE UN GRUPO -------------
+
+# Función: eliminar_contacto_de_grupo
+# Propósito: Permitir eliminar un contacto de un grupo existente
+# Entrada (E): Solicita el nombre del grupo, el teléfono y el área del
+#              contacto, la confirmación A/C y la confirmación SI/NO
+# Salida (S): Elimina la tupla (teléfono, área) de la lista de contactos
+#             del grupo en contactos_por_grupo si el usuario confirma
+#             El contacto sigue registrado en la lista contactos
+#             Si cancela, no elimina nada
+#             Muestra mensajes de error, confirmación o cancelación
+#             No devuelve un valor
+
+def eliminar_contacto_de_grupo():
+
+    # Comprobar que exista una configuración guardada
+    if len(configuracion) == 0:
+        print("Primero debe configurar la lista de contactos.")
+        return
+
+    # Repetir la ventana hasta que el usuario escriba C en el nombre del grupo
+    while True:
+        print("\n      ADMINISTRAR GRUPOS DE CONTACTOS")
+        print("      Eliminar contactos de los grupos\n")
+
+        # Solicitar y validar el nombre del grupo
+        while True:
+            nombre_grupo = input("Nombre del grupo: ").strip()
+
+            # Regresar al menú anterior
+            if nombre_grupo == "C":
+                return
+
+            posicion_grupo = buscar_grupo(grupos, nombre_grupo)
+
+            if posicion_grupo == -1:
+                print("ESTE GRUPO NO EXISTE, NO PUEDE ELIMINARLE CONTACTOS")
+
+            else:
+                break
+
+        # Repetir teléfono y área si el contacto no está en el grupo
+        while True:
+
+            # Solicitar y validar el teléfono
+            while True:
+                telefono = input("Teléfono: ").strip()
+
+                # Regresar al menú anterior
+                if telefono == "C":
+                    return
+
+                # Validar que solamente contenga números
+                if telefono.isdigit():
+
+                    # Validar la cantidad de dígitos
+                    if len(telefono) >= 5 and len(telefono) <= 12:
+                        telefono = int(telefono)
+
+                        # Validar que sea mayor que cero
+                        if telefono > 0:
+                            break
+                        else:
+                            print("ERROR: El teléfono debe ser mayor que cero.")
+
+                    else:
+                        print("ERROR: El teléfono debe tener entre 5 y 12 dígitos.")
+
+                else:
+                    print("ERROR: El teléfono debe contener solamente números.")
+
+            # Solicitar y validar el área
+            while True:
+                area = input("Área: ").strip()
+
+                # Usar el área por omisión cuando el campo esté vacío
+                if area == "":
+                    area = str(configuracion[0])
+
+                # Validar que el área sea numérica
+                if area.isdigit():
+                    area = int(area)
+                    break
+
+                else:
+                    print("ERROR: El código de área debe contener solamente números.")
+
+            # Buscar el contacto dentro de la lista de ese grupo
+            posicion_en_grupo = buscar_contacto_en_grupo(contactos_por_grupo[posicion_grupo], telefono, area)
+
+            if posicion_en_grupo == -1:
+                print("ESTE CONTACTO NO EXISTE EN EL GRUPO, NO PUEDE ELIMINARLO")
+
+            else:
+                break
+
+        # Mostrar el nombre del área y el nombre del contacto
+        posicion = buscar_contacto(contactos, area, telefono)
+        posicion_area = buscar_area(areas, area)
+        print("Nombre del área:", areas[posicion_area][1])
+        print("Nombre contacto:", contactos[posicion][3])
+
+        # Confirmar si desea eliminar o cancelar
+        opcion = input("OPCIÓN A-ACEPTAR C-CANCELAR: ")
+
+        while opcion != "A" and opcion != "C":
+            print("ERROR: OPCIÓN NO VÁLIDA.")
+            opcion = input("OPCIÓN A-ACEPTAR C-CANCELAR: ")
+
+        if opcion == "A":
+
+            # Pedir confirmación de eliminar
+            confirmacion = input("CONFIRMA LA ELIMINACIÓN (SI/NO): ")
+
+            while confirmacion != "SI" and confirmacion != "NO":
+                print("ERROR: OPCIÓN NO VÁLIDA.")
+                confirmacion = input("CONFIRMA LA ELIMINACIÓN (SI/NO): ")
+
+            if confirmacion == "SI":
+                # Solo se quita la tupla del grupo; el contacto sigue en contactos
+                contactos_por_grupo[posicion_grupo].pop(posicion_en_grupo)
+                print("Contacto eliminado del grupo correctamente.")
+
+            else:
+                print("Eliminación cancelada")
+
+        else:
+            print("Eliminación cancelada")
+
 # ---------------------------------- FIN ADMINISTRAR GRUPOS DE CONTACTOS -------------------------------------------
 
 # ---------------------------------- MENU ADMINISTRAR GRUPOS DE CONTACTOS -------------------------------------------
@@ -1476,7 +1605,7 @@ def menu_administrar_grupos_de_contactos():
             case "4":
                 eliminar_grupo()
             case "5":
-                pass # Llamada a la función para eliminar contactos de los grupos
+                eliminar_contacto_de_grupo()
             case "0":
                 break
             case _:
