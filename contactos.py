@@ -23,7 +23,7 @@ def buscar_area(areas, codigo): # devuelve la posición dentro de la lista
     posicion = -1 # Indica que el área no se ha encontrado
 
     for i in range(len(areas)):
-        if areas[i][0] == codigo: # [i][0], [i] = cuál tupla de la lista se va a revisar y [0] = cual posiscion de la tupla se va a revisar
+        if areas[i][0] == codigo: # [i][0], [i] = cuál tupla de la lista se va a revisar y [0] = cuál posición de la tupla se va a revisar
             posicion = i
 
     return posicion
@@ -366,7 +366,7 @@ def configurar_lista_contactos():
     # Comprobar que existan áreas registradas antes de configurar
     if len(areas) == 0:
         print("No hay áreas registradas. Primero debe registrar un área.")
-        return # Esto no estaba indicado en las instrucciones, pero me parecio importante, ya que si entra a configuración, estaría en bucle pidiendo código
+        return # El enunciado no lo indica; se agregó para evitar un ciclo infinito pidiendo un código de área cuando no hay áreas registradas
 
     # Solicitar el código de área hasta que se ingrese uno válido
     while True:
@@ -1396,6 +1396,97 @@ def agregar_contacto_a_grupo():
         else:
             print("Operación cancelada")
 
+# ------------- MODIFICAR GRUPO -------------
+
+# Función: modificar_grupo
+# Propósito: Permitir modificar el nombre de un grupo registrado
+# Entrada (E): Solicita el nombre del grupo, el nuevo nombre (con Enter se
+#              conserva el actual) y la confirmación A/C
+# Salida (S): Si el nuevo nombre no existe, cambia el nombre del grupo en la
+#             lista grupos
+#             Si ya existe, pasa los contactos del grupo actual al grupo
+#             existente (sin repetirlos) y elimina el grupo actual de las
+#             listas grupos y contactos_por_grupo
+#             Si cancela, no cambia nada
+#             Muestra mensajes de error, confirmación o cancelación
+#             No devuelve un valor
+
+def modificar_grupo():
+
+    # Repetir la ventana de modificar hasta que el usuario escriba C
+    while True:
+        print("\n      ADMINISTRAR GRUPOS DE CONTACTOS")
+        print("      Modificar grupos\n")
+
+        # Solicitar y validar el nombre del grupo
+        while True:
+            nombre_grupo = input("Nombre del grupo: ").strip()
+
+            # Regresar al menú anterior
+            if nombre_grupo == "C":
+                return
+
+            posicion_grupo = buscar_grupo(grupos, nombre_grupo)
+
+            if posicion_grupo == -1:
+                print("GRUPO NO ESTÁ REGISTRADO, NO SE PUEDE MODIFICAR")
+
+            else:
+                break
+
+        # Solicitar y validar el nuevo nombre
+        while True:
+            nuevo_nombre = input("MODIFICACIÓN: ").strip()
+
+            # Si no escribe nada, se conserva el nombre actual
+            if nuevo_nombre == "":
+                nuevo_nombre = nombre_grupo
+
+            # Comprobar que tenga entre 1 y 40 caracteres
+            if len(nuevo_nombre) >= 1 and len(nuevo_nombre) <= 40:
+                break
+
+            else:
+                print("ERROR: El nombre del grupo debe tener entre 1 y 40 caracteres.")
+
+        # Buscar si el nuevo nombre ya existe en otro grupo
+        posicion_nuevo = buscar_grupo(grupos, nuevo_nombre)
+
+        if posicion_nuevo != -1 and posicion_nuevo != posicion_grupo:
+            print("GRUPO YA EXISTE, EN CASO DE ACEPTAR LA OPERACIÓN LOS CONTACTOS SE LE AGREGARÁN")
+
+        # Confirmar si desea modificar o cancelar
+        opcion = input("OPCIÓN A-ACEPTAR C-CANCELAR: ")
+
+        while opcion != "A" and opcion != "C":
+            print("ERROR: OPCIÓN NO VÁLIDA.")
+            opcion = input("OPCIÓN A-ACEPTAR C-CANCELAR: ")
+
+        if opcion == "A":
+
+            # El nombre es nuevo (o no cambió): solo se reemplaza el nombre
+            if posicion_nuevo == -1 or posicion_nuevo == posicion_grupo:
+                grupos[posicion_grupo] = nuevo_nombre
+
+            # El nombre ya existe: los contactos pasan al otro grupo
+            else:
+                for i in range(len(contactos_por_grupo[posicion_grupo])):
+                    # [i] indica cuál tupla (teléfono, área) del grupo actual se pasa
+                    contacto_grupo = contactos_por_grupo[posicion_grupo][i]
+
+                    # En un grupo no hay contactos repetidos
+                    if buscar_contacto_en_grupo(contactos_por_grupo[posicion_nuevo], contacto_grupo[0], contacto_grupo[1]) == -1:
+                        contactos_por_grupo[posicion_nuevo].append(contacto_grupo)
+
+                # El grupo modificado se elimina de las dos listas (relación 1:1)
+                grupos.pop(posicion_grupo)
+                contactos_por_grupo.pop(posicion_grupo)
+
+            print("Grupo modificado correctamente.")
+
+        else:
+            print("Modificación cancelada")
+
 # ------------- ELIMINAR GRUPO -------------
 
 # Función: eliminar_grupo
@@ -1598,7 +1689,6 @@ def eliminar_contacto_de_grupo():
 #             grupos, además de agregar o eliminar contactos de ellos
 #             Muestra un error si la opción no es válida
 #             Regresa al menú principal al seleccionar 0
-#             Las operaciones de grupos aún no están implementadas
 #             No devuelve un valor
 
 def menu_administrar_grupos_de_contactos():
@@ -1619,7 +1709,7 @@ def menu_administrar_grupos_de_contactos():
             case "2":
                 agregar_contacto_a_grupo()
             case "3":
-                pass # Llamada a funcion de el menu de Modificar contactos
+                modificar_grupo()
             case "4":
                 eliminar_grupo()
             case "5":
