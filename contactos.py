@@ -1872,6 +1872,23 @@ def lista_contactos():
 
 # ---------------------------------- FIN LISTA DE CONTACTOS -------------------------------------------
 
+# ---------------------------------- INICIO ACERCA DE -------------------------------------------
+
+# Función: acerca_de
+# Propósito: Mostrar la información general del programa
+# Entrada (E): Nombre del programa, versión, fecha de creación y autor
+# Salida (S): Muestra los cuatro datos en pantalla
+#             No devuelve un valor
+
+def acerca_de(nombre, version, fecha, autor):
+    print("\n      ACERCA DE\n")
+    print("Programa:", nombre)
+    print("Versión:", version)
+    print("Fecha de creación:", fecha)
+    print("Autor:", autor)
+
+# ---------------------------------- FIN ACERCA DE -------------------------------------------
+
 #  ---------------------------------- MENU PRINCIPAL -------------------------------------------
 
 # Función: menu_principal
@@ -1911,7 +1928,7 @@ def menu_principal():
             case "6":
                 pass # Llamada a funcion de el menu de Ayuda
             case "7":
-                pass # Llamada a funcion de el menu de Acerca de
+                acerca_de("Lista Digital de Contactos", "1.0", "04/10/2026", "Amy Jimena Morataya Sandoval")
             case "0":
                 print("Programa finalizado.")
                 break
