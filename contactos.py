@@ -1721,6 +1721,157 @@ def menu_administrar_grupos_de_contactos():
 
 # ---------------------------------- FIN MENU ADMINISTRAR GRUPOS DE CONTACTOS -------------------------------------------
 
+# ---------------------------------- INICIO LISTA DE CONTACTOS -------------------------------------------
+# ------------- FUNCIONES AUXILIARES DE LA LISTA DE CONTACTOS -------------
+
+# Función: coincide_con_filtro
+# Propósito: Comprobar si un dato cumple con un filtro, sin distinguir
+#            mayúsculas de minúsculas y permitiendo el comodín %
+#            (el % reemplaza cero o más caracteres)
+# Entrada (E): Texto del dato y texto del filtro
+# Salida (S): Devuelve True si el dato cumple el filtro o False si no lo cumple
+#             Un filtro vacío cumple con cualquier dato
+#             Un filtro sin % solo cumple si es exactamente igual al dato
+
+def coincide_con_filtro(dato, filtro):
+    if filtro == "":
+        cumple = True
+
+    else:
+        # Separar el filtro en las partes que están entre los %
+        partes = filtro.split("%")
+
+        # re.escape hace que símbolos como el punto o el paréntesis se tomen como texto normal
+        for i in range(len(partes)):
+            partes[i] = re.escape(partes[i])
+
+        # Cada % se cambia por .* que significa "cero o más caracteres cualesquiera"
+        patron = ".*".join(partes)
+
+        # fullmatch exige que todo el dato cumpla el patrón; re.IGNORECASE ignora mayúsculas y minúsculas
+        cumple = re.fullmatch(patron, dato, re.IGNORECASE) is not None
+
+    return cumple
+
+# Función: contacto_cumple_grupo
+# Propósito: Comprobar si un contacto pertenece a algún grupo cuyo nombre
+#            cumple con el filtro de grupo
+# Entrada (E): Listas grupos y contactos_por_grupo, teléfono y área del
+#              contacto, y el filtro de grupo
+# Salida (S): Devuelve True si el contacto está en algún grupo que cumple
+#             el filtro o False si no
+#             Un filtro vacío cumple siempre, aunque el contacto no esté en grupos
+
+def contacto_cumple_grupo(grupos, contactos_por_grupo, telefono, area, filtro_grupo):
+    if filtro_grupo == "":
+        cumple = True
+
+    else:
+        cumple = False
+
+        for i in range(len(grupos)):
+            # [i] indica cuál grupo se está revisando (grupos y contactos_por_grupo van en paralelo)
+            if coincide_con_filtro(grupos[i], filtro_grupo):
+                if buscar_contacto_en_grupo(contactos_por_grupo[i], telefono, area) != -1:
+                    cumple = True
+
+    return cumple
+
+# Función: filtrar_contactos
+# Propósito: Obtener los contactos que cumplen con los seis filtros a la vez
+# Entrada (E): Listas contactos, grupos y contactos_por_grupo, y una lista
+#              con los seis filtros: nombre, teléfono, área, fecha de
+#              nacimiento, pasatiempos y grupo
+# Salida (S): Devuelve una lista con los contactos que cumplen todos los filtros
+#             No modifica ninguna de las listas recibidas
+
+def filtrar_contactos(contactos, grupos, contactos_por_grupo, filtros):
+    encontrados = []
+
+    for i in range(len(contactos)):
+        # [i] indica cuál contacto se está revisando
+        contacto = contactos[i]
+
+        # El teléfono, el área y la fecha se pasan a texto con str() para poder compararlos
+        # [0] teléfono, [1] área, [3] nombre, [6] fecha, [7] pasatiempos
+        if (coincide_con_filtro(contacto[3], filtros[0]) and
+            coincide_con_filtro(str(contacto[0]), filtros[1]) and
+            coincide_con_filtro(str(contacto[1]), filtros[2]) and
+            coincide_con_filtro(str(contacto[6]), filtros[3]) and
+            coincide_con_filtro(contacto[7], filtros[4]) and
+            contacto_cumple_grupo(grupos, contactos_por_grupo, contacto[0], contacto[1], filtros[5])):
+
+            encontrados.append(contacto)
+
+    return encontrados
+
+# Función: emitir_listado
+# Propósito: Mostrar en pantalla los contactos que cumplieron los filtros
+# Entrada (E): Lista de contactos encontrados
+# Salida (S): Muestra el nombre, el teléfono y el área de cada contacto
+#             Muestra un mensaje si no hay contactos
+#             No devuelve un valor
+
+def emitir_listado(encontrados):
+    if len(encontrados) == 0:
+        print("No hay contactos que cumplan con los filtros.")
+
+    else:
+        print("Contactos encontrados:", len(encontrados))
+
+        for i in range(len(encontrados)):
+            # [3] nombre, [0] teléfono, [1] área
+            print(encontrados[i][3], "|", encontrados[i][0], "|", encontrados[i][1])
+
+# ------------- LISTA DE CONTACTOS -------------
+
+# Función: lista_contactos
+# Propósito: Solicitar los seis filtros y emitir el listado de los
+#            contactos que cumplen con todos ellos
+# Entrada (E): Solicita nombre, teléfono, área, fecha de nacimiento,
+#              pasatiempos y grupo (se pueden dejar vacíos y se puede usar
+#              el comodín %), y la confirmación A/C
+# Salida (S): Si el usuario acepta, emite el listado de contactos que
+#             cumplen los filtros
+#             Si cancela, vuelve a mostrar la ventana con los filtros vacíos
+#             Con C en el primer filtro regresa al menú principal
+#             No devuelve un valor
+
+def lista_contactos():
+
+    # Repetir la ventana hasta que el usuario escriba C en el primer filtro
+    while True:
+        print("\n      LISTA DE CONTACTOS\n")
+
+        nombre = input("FILTROS: Nombre contacto: ").strip()
+
+        # Regresar al menú anterior
+        if nombre == "C":
+            return
+
+        telefono = input("Teléfono: ").strip()
+        area = input("Área: ").strip()
+        fecha = input("Fecha de nacimiento: ").strip()
+        pasatiempos = input("Pasatiempos: ").strip()
+        grupo = input("Grupo: ").strip()
+
+        # Aceptar o cancelar la emisión del listado
+        opcion = input("OPCIÓN A-ACEPTAR C-CANCELAR: ")
+
+        while opcion != "A" and opcion != "C":
+            print("ERROR: OPCIÓN NO VÁLIDA.")
+            opcion = input("OPCIÓN A-ACEPTAR C-CANCELAR: ")
+
+        if opcion == "A":
+            filtros = [nombre, telefono, area, fecha, pasatiempos, grupo]
+            encontrados = filtrar_contactos(contactos, grupos, contactos_por_grupo, filtros)
+            emitir_listado(encontrados)
+
+        else:
+            print("Listado cancelado")
+
+# ---------------------------------- FIN LISTA DE CONTACTOS -------------------------------------------
+
 #  ---------------------------------- MENU PRINCIPAL -------------------------------------------
 
 # Función: menu_principal
@@ -1756,7 +1907,7 @@ def menu_principal():
             case "4":
                 menu_administrar_grupos_de_contactos()
             case "5":
-                pass # Llamada a funcion de el menu de Lista de contactos
+                lista_contactos()
             case "6":
                 pass # Llamada a funcion de el menu de Ayuda
             case "7":
