@@ -1,5 +1,6 @@
 import re # Permite utilizar expresiones regulares para validar el correo
 import datetime # Permite comprobar que una fecha exista de verdad
+import os # Permite ubicar y abrir el archivo PDF del manual de usuario
 # ------------- DATOS -------------
 areas = []        # lista de tuplas (codigo, nombre)
 contactos = []    # lista de listas
@@ -1889,6 +1890,34 @@ def acerca_de(nombre, version, fecha, autor):
 
 # ---------------------------------- FIN ACERCA DE -------------------------------------------
 
+# ---------------------------------- INICIO AYUDA -------------------------------------------
+
+# Función: ayuda
+# Propósito: Mostrar en pantalla el manual de usuario del programa
+# Entrada (E): Nombre del archivo PDF del manual de usuario
+# Salida (S): Abre el manual con el visor de PDF del computador
+#             Si el archivo no existe, muestra un mensaje de error
+#             No devuelve un valor
+
+def ayuda(nombre_archivo):
+    print("\n      AYUDA\n")
+
+    # Carpeta donde está guardado contactos.py
+    carpeta = os.path.dirname(os.path.abspath(__file__))
+
+    # Ruta completa del manual: carpeta + nombre del archivo
+    ruta = os.path.join(carpeta, nombre_archivo)
+
+    # Comprobar que el manual exista antes de abrirlo
+    if os.path.exists(ruta):
+        print("Abriendo el manual de usuario...")
+        os.startfile(ruta) # Abre el PDF con el programa predeterminado de Windows
+    else:
+        print("ERROR: No se encontró el manual de usuario (" + nombre_archivo + ").")
+        print("Debe estar en la misma carpeta que contactos.py.")
+
+# ---------------------------------- FIN AYUDA -------------------------------------------
+
 #  ---------------------------------- MENU PRINCIPAL -------------------------------------------
 
 # Función: menu_principal
@@ -1926,7 +1955,7 @@ def menu_principal():
             case "5":
                 lista_contactos()
             case "6":
-                pass # Llamada a funcion de el menu de Ayuda
+                ayuda("manual_de_usuario_contactos.PDF")
             case "7":
                 acerca_de("Lista Digital de Contactos", "1.0", "04/10/2026", "Amy Jimena Morataya Sandoval")
             case "0":
