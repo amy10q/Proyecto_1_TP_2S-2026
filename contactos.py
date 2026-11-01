@@ -1,6 +1,8 @@
 import re # Permite utilizar expresiones regulares para validar el correo
 import datetime # Permite comprobar que una fecha exista de verdad
 import os # Permite ubicar y abrir el archivo PDF del manual de usuario
+import importlib.util # Permite comprobar si la biblioteca fpdf2 está instalada
+
 # ------------- DATOS -------------
 areas = []        # lista de tuplas (codigo, nombre)
 contactos = []    # lista de listas
@@ -594,6 +596,10 @@ def agregar_contacto():
             correo = input("Correo electrónico: ")
 
             # Validar el formato parte1@parte2 sin espacios en blanco
+            # [^@\s]+ = uno o más caracteres que no sean @ ni espacio (parte1)
+            # @       = exactamente una arroba
+            # [^@\s]+ = uno o más caracteres que no sean @ ni espacio (parte2)
+            # fullmatch revisa que todo el correo cumpla el patrón, no solo una parte
             if re.fullmatch(r"[^@\s]+@[^@\s]+", correo):
                 break
 
@@ -1014,6 +1020,10 @@ def modificar_contacto():
                 nuevo_correo = contactos[posicion][4]
 
             # Validar el formato parte1@parte2 sin espacios en blanco
+            # [^@\s]+ = uno o más caracteres que no sean @ ni espacio (parte1)
+            # @       = exactamente una arroba
+            # [^@\s]+ = uno o más caracteres que no sean @ ni espacio (parte2)
+            # fullmatch revisa que todo el correo cumpla el patrón, no solo una parte
             if re.fullmatch(r"[^@\s]+@[^@\s]+", nuevo_correo):
                 break
 
@@ -1750,6 +1760,7 @@ def coincide_con_filtro(dato, filtro):
         patron = ".*".join(partes)
 
         # fullmatch exige que todo el dato cumpla el patrón; re.IGNORECASE ignora mayúsculas y minúsculas
+        # fullmatch devuelve None si no coincide; "is not None" lo convierte en True o False
         cumple = re.fullmatch(patron, dato, re.IGNORECASE) is not None
 
     return cumple
@@ -1806,23 +1817,136 @@ def filtrar_contactos(contactos, grupos, contactos_por_grupo, filtros):
 
     return encontrados
 
+# Función: nombre_tipo
+# Propósito: Obtener la descripción de un tipo de teléfono
+# Entrada (E): Código del tipo de teléfono (M, C, T u O)
+# Salida (S): Devuelve la descripción (Móvil, Casa, Trabajo u Otro)
+#             Si el código no existe, devuelve el mismo código
+
+def nombre_tipo(tipo):
+    nombre = tipo
+
+    # TIPOS_TELEFONO = ("M", "Móvil", "C", "Casa", "T", "Trabajo", "O", "Otro")
+    # Los códigos están en las posiciones pares (0, 2, 4, 6)
+    # y su descripción en la posición siguiente (i + 1)
+    # range(0, len(TIPOS_TELEFONO), 2) avanza de 2 en 2: 0, 2, 4, 6
+    for i in range(0, len(TIPOS_TELEFONO), 2):
+        if TIPOS_TELEFONO[i] == tipo:
+            nombre = TIPOS_TELEFONO[i + 1]
+
+    return nombre
+
+
+# Función: texto_pdf
+# Propósito: Preparar un dato para escribirlo en el PDF
+# Entrada (E): Un dato del contacto (texto o número)
+# Salida (S): Devuelve el dato como texto; los caracteres que la fuente
+#             del PDF no puede mostrar (por ejemplo, emojis) se cambian por ?
+
+def texto_pdf(dato):
+    # str() convierte el dato en texto (la fecha puede ser el número 0)
+    texto = str(dato)
+
+    # La fuente Helvetica solo conoce el alfabeto latin-1 (letras, números, tildes, ñ, ¿ y ¡)
+    # encode(..., "replace") pasa el texto a ese alfabeto y cambia por ? lo que no existe en él
+    # decode(...) lo vuelve a convertir en texto normal
+    texto = texto.encode("latin-1", "replace").decode("latin-1")
+    return texto
+
+
 # Función: emitir_listado
-# Propósito: Mostrar en pantalla los contactos que cumplieron los filtros
-# Entrada (E): Lista de contactos encontrados
-# Salida (S): Muestra el nombre, el teléfono y el área de cada contacto
-#             Muestra un mensaje si no hay contactos
+# Propósito: Emitir el listado de contactos en un archivo PDF
+# Entrada (E): Lista de contactos que cumplen con los filtros
+# Salida (S): Crea un archivo PDF con una tabla de los contactos en la
+#             carpeta del programa y muestra su nombre en pantalla
+#             Si no hay contactos o falta la biblioteca, muestra un mensaje
 #             No devuelve un valor
 
 def emitir_listado(encontrados):
     if len(encontrados) == 0:
         print("No hay contactos que cumplan con los filtros.")
 
-    else:
-        print("Contactos encontrados:", len(encontrados))
+    # Comprobar que la biblioteca fpdf2 esté instalada antes de usarla
+    # find_spec busca la biblioteca: si no la encuentra devuelve None (nada)
+    elif importlib.util.find_spec("fpdf") is None:
+        print("ERROR: Falta instalar la biblioteca fpdf2. Escriba en la terminal: python -m pip install fpdf2")
 
-        for i in range(len(encontrados)):
-            # [3] nombre, [0] teléfono, [1] área
-            print(encontrados[i][3], "|", encontrados[i][0], "|", encontrados[i][1])
+    else:
+        # Traer la clase FPDF de la biblioteca fpdf2 (solo cuando ya se sabe que está instalada)
+        from fpdf import FPDF
+
+        # FPDF() crea un documento PDF vacío
+        # orientation="L" (landscape) pone la hoja horizontal para que quepan las 8 columnas
+        pdf = FPDF(orientation="L")
+
+        # add_page() agrega una hoja en blanco al documento
+        pdf.add_page()
+
+        # set_font(letra, estilo, tamaño) elige la letra: "B" es negrita (bold)
+        pdf.set_font("Helvetica", "B", 14)
+
+        # cell(ancho, alto, texto, ...) escribe una línea de texto
+        # ancho 0 = todo el ancho de la hoja; align="C" la centra
+        # new_x="LMARGIN" y new_y="NEXT" hacen que lo siguiente empiece abajo, en el margen izquierdo
+        pdf.cell(0, 10, "LISTA DIGITAL DE CONTACTOS - LISTA DE CONTACTOS", new_x="LMARGIN", new_y="NEXT", align="C")
+
+        # Letra normal (sin "B") de tamaño 10 para la cantidad de contactos
+        pdf.set_font("Helvetica", size=10)
+        pdf.cell(0, 8, "Contactos encontrados: " + str(len(encontrados)), new_x="LMARGIN", new_y="NEXT")
+
+        # Letra más pequeña para la tabla
+        pdf.set_font("Helvetica", size=8)
+
+        # with pdf.table(...) as tabla: abre una tabla llamada tabla
+        # Todo lo que está indentado debajo son las filas de la tabla
+        # Al terminar el bloque, la tabla se dibuja en el PDF
+        # col_widths = ancho de cada una de las 8 columnas; text_align="LEFT" alinea el texto a la izquierda
+        # Si un texto es largo, baja de línea dentro de su celda; si no cabe en la hoja, sigue en otra página
+        with pdf.table(col_widths=(35, 30, 18, 45, 45, 22, 40, 42), text_align="LEFT") as tabla:
+
+            # tabla.row() crea una fila nueva; la primera fila es el encabezado y se repite en cada página
+            encabezado = tabla.row()
+            for titulo in ("Nombre", "Teléfono y área", "Tipo", "Correo electrónico",
+                           "Dirección física", "Fecha de nacimiento", "Pasatiempos", "Notas"):
+                # fila.cell(texto) agrega una celda (columna) a la fila
+                encabezado.cell(texto_pdf(titulo))
+
+            # Una fila por cada contacto encontrado
+            # Orden del contacto: [0] teléfono, [1] área, [2] tipo, [3] nombre, [4] correo,
+            # [5] dirección, [6] fecha, [7] pasatiempos, [8] notas
+            for i in range(len(encontrados)):
+                contacto = encontrados[i]
+                fila = tabla.row()
+                fila.cell(texto_pdf(contacto[3]))                                       # nombre
+                fila.cell(texto_pdf(str(contacto[0]) + " (" + str(contacto[1]) + ")"))  # teléfono (área)
+                fila.cell(texto_pdf(nombre_tipo(contacto[2])))                          # tipo
+                fila.cell(texto_pdf(contacto[4]))                                       # correo
+                fila.cell(texto_pdf(contacto[5]))                                       # dirección
+                fila.cell(texto_pdf(contacto[6]))                                       # fecha de nacimiento
+                fila.cell(texto_pdf(contacto[7]))                                       # pasatiempos
+                fila.cell(texto_pdf(contacto[8]))                                       # notas
+
+        # os.path.abspath(__file__) = ruta completa de contactos.py
+        # os.path.dirname(...) = se queda solo con la carpeta donde está contactos.py
+        carpeta = os.path.dirname(os.path.abspath(__file__))
+
+        # Buscar un nombre de archivo libre: lista_contactos_1.pdf, lista_contactos_2.pdf, ...
+        # así no se reemplaza un listado anterior que esté abierto
+        # os.path.join(carpeta, nombre) une la carpeta y el nombre en una sola ruta
+        # os.path.exists(ruta) devuelve True si ese archivo ya existe
+        numero = 1
+        ruta = os.path.join(carpeta, "lista_contactos_" + str(numero) + ".pdf")
+        while os.path.exists(ruta):
+            numero = numero + 1
+            ruta = os.path.join(carpeta, "lista_contactos_" + str(numero) + ".pdf")
+
+        # output(ruta) guarda el PDF en esa ruta
+        pdf.output(ruta)
+
+        # os.path.basename(ruta) muestra solo el nombre del archivo, sin la carpeta
+        print("Contactos encontrados:", len(encontrados))
+        print("Listado generado:", os.path.basename(ruta))
+        print("Se guardó en la carpeta:", carpeta)
 
 # ------------- LISTA DE CONTACTOS -------------
 
@@ -1902,16 +2026,19 @@ def acerca_de(nombre, version, fecha, autor):
 def ayuda(nombre_archivo):
     print("\n      AYUDA\n")
 
-    # Carpeta donde está guardado contactos.py
+    # os.path.abspath(__file__) = ruta completa de contactos.py
+    # os.path.dirname(...) = se queda solo con la carpeta donde está contactos.py
     carpeta = os.path.dirname(os.path.abspath(__file__))
 
-    # Ruta completa del manual: carpeta + nombre del archivo
+    # os.path.join(carpeta, nombre) une la carpeta y el nombre del manual en una sola ruta
     ruta = os.path.join(carpeta, nombre_archivo)
 
-    # Comprobar que el manual exista antes de abrirlo
+    # os.path.exists(ruta) devuelve True si el archivo existe; se revisa antes de abrirlo
     if os.path.exists(ruta):
         print("Abriendo el manual de usuario...")
-        os.startfile(ruta) # Abre el PDF con el programa predeterminado de Windows
+        # os.startfile(ruta) abre el archivo con el programa predeterminado de Windows (el visor de PDF)
+        # El programa no espera a que se cierre el PDF: vuelve al menú de inmediato
+        os.startfile(ruta)
     else:
         print("ERROR: No se encontró el manual de usuario (" + nombre_archivo + ").")
         print("Debe estar en la misma carpeta que contactos.py.")
