@@ -15,10 +15,10 @@ contactos_por_grupo = []    # lista de listas de tuplas (telefono, area)
 # ---------------------------------- INICIO REGISTRAR AREAS -------------------------------------------
 # ------------- FUNCIONES AUXILIARES DE ÁREAS -------------
 
-# Función: buscar_area
-# Propósito: Buscar un código dentro de la lista de áreas
-# Entrada (E): Lista de áreas y código que se desea buscar
-# Salida (S): Devuelve la posición del área si existe o -1 si no existe
+# BUSCAR ÁREA
+# Busca un código en la lista de áreas
+# E: la lista de áreas y el código que se busca
+# S: la posición del área en la lista, o -1 si no está
 
 def buscar_area(areas, codigo): # devuelve la posición dentro de la lista
     # Busca un código dentro de la lista de áreas
@@ -32,10 +32,10 @@ def buscar_area(areas, codigo): # devuelve la posición dentro de la lista
     return posicion
 
 
-# Función: existe_area
-# Propósito: Comprobar si un código de área está registrado
-# Entrada (E): Lista de áreas y código que se desea comprobar
-# Salida (S): Devuelve True si el área existe o False si no existe
+# EXISTE ÁREA
+# Revisa si un código de área ya está registrado
+# E: la lista de áreas y el código
+# S: True si el área existe, False si no
 
 def existe_area(areas, codigo):
      # Comprueba si el código se encuentra registrado 
@@ -50,11 +50,10 @@ def existe_area(areas, codigo):
 
     return existe
 
-# Función: area_en_uso
-# Propósito: Comprobar si algún contacto está usando un código de área
-# Entrada (E): Lista de contactos y código de área que se desea revisar
-# Salida (S): Devuelve True si al menos un contacto usa el área
-#             o False si ningún contacto la usa
+# ÁREA EN USO
+# Revisa si algún contacto tiene ese código de área
+# E: la lista de contactos y el código de área
+# S: True si algún contacto la usa, False si ninguno
 
 def area_en_uso(contactos, codigo):
     en_uso = False
@@ -69,12 +68,10 @@ def area_en_uso(contactos, codigo):
 
 # ------------- AGREGAR ÁREA -------------
 
-# Función: agregar_area
-# Propósito: Permitir registrar nuevas áreas en la lista
-# Entrada (E): Solicita el código del área, su nombre y la confirmación A/C
-# Salida (S): Agrega una tupla (codigo, nombre) a la lista areas si se acepta
-#             Muestra mensajes de error, confirmación o cancelación
-#             No devuelve un valor
+# AGREGAR ÁREA
+# Pide el código y el nombre de un área y la guarda si se acepta
+# E: código, nombre y opción A/C 
+# S: agrega la tupla (codigo, nombre) a la lista areas
 
 def agregar_area():
     while True:
@@ -133,12 +130,10 @@ def agregar_area():
 
 # ------------- CONSULTAR ÁREA -------------
 
-# Función: consultar_area
-# Propósito: Permitir consultar la información de un área registrada
-# Entrada (E): Solicita el código del área y la confirmación A para continuar
-# Salida (S): Muestra el código y nombre del área si existe
-#             Muestra mensajes de error si los datos son incorrectos
-#             No modifica la lista de áreas ni devuelve un valor
+# CONSULTAR ÁREA
+# Muestra el código y el nombre de un área registrada
+# E: el código del área y la opción A 
+# S: muestra los datos del área o el mensaje de error
 
 def consultar_area():
     while True:
@@ -183,13 +178,10 @@ def consultar_area():
 
 # ------------- MODIFICAR ÁREA -------------
 
-# Función: modificar_area
-# Propósito: Permitir modificar el nombre de un área registrada
-# Entrada (E): Solicita el código del área, el nuevo nombre y la
-#              confirmación A/C
-# Salida (S): Reemplaza la tupla del área con el nuevo nombre si
-#             el usuario acepta. Muestra mensajes de error o
-#             cancelación. No devuelve un valor
+# MODIFICAR ÁREA
+# Cambia el nombre de un área registrada
+# E: código, nuevo nombre y opción A/C 
+# S: cambia la tupla del área en la lista areas si se acepta
 
 def modificar_area():
     while True:
@@ -251,13 +243,10 @@ def modificar_area():
 
 # ------------- ELIMINAR ÁREA -------------
 
-# Función: eliminar_area
-# Propósito: Permitir eliminar un área registrada
-# Entrada (E): Solicita el código del área y la confirmación A/C
-# Salida (S): Elimina el área de la lista si el usuario acepta
-#             Muestra mensajes de error o cancelación
-#             No devuelve un valor
-#             No elimina el área si algún contacto la está usando
+# ELIMINAR ÁREA
+# Elimina un área si ningún contacto la está usando
+# E: el código del área y la opción A/C 
+# S: quita el área de la lista areas si se acepta
 
 def eliminar_area():
     while True:
@@ -313,14 +302,10 @@ def eliminar_area():
 
 # ---------------------------------- INICIO MENU REGISTRAR AREAS -------------------------------------------
 
-# Función: menu_regitrar_areas
-# Propósito: Mostrar el menú de Registrar áreas y permitir
-#            seleccionar las operaciones disponibles
-# Entrada (E): Solicita al usuario una opción del menú
-# Salida (S): Ejecuta la función correspondiente a la opción elegida
-#             Muestra un error si la opción no es válida
-#             Regresa al menú principal cuando se selecciona 0
-#             No devuelve un valor
+# MENÚ REGISTRAR ÁREAS
+# Muestra las opciones de áreas y llama a la que se elija
+# E: la opción del menú 
+# S: ejecuta la opción elegida, con 0 vuelve al menú principal
 
 def menu_regitrar_areas():
     while True:
@@ -352,16 +337,10 @@ def menu_regitrar_areas():
 
 # ------------- CONFIGURACIÓN DE CONTACTOS -------------
 
-# Función: configurar_lista_contactos
-# Propósito: Establecer el área y tipo de teléfono por omisión
-# Entrada (E): Solicita el código de un área registrada, el tipo
-#              de teléfono (M, C, T, O) y la confirmación A/C
-#              Utiliza las listas areas y configuracion
-# Salida (S): Guarda o actualiza los valores en configuracion
-#             cuando el usuario acepta
-#             Si cancela, conserva los valores anteriores
-#             Muestra mensajes de error o confirmación
-#             No devuelve un valor
+# CONFIGURACIÓN DE LA LISTA DE CONTACTOS
+# Guarda el área y el tipo de teléfono que se usan por omisión
+# E: código de área, tipo de teléfono y opción A/C 
+# S: guarda los dos valores en la lista configuracion si se acepta
 
 def configurar_lista_contactos():
     print("\n      CONFIGURACIÓN DE LA LISTA DE CONTACTOS\n")
@@ -369,7 +348,7 @@ def configurar_lista_contactos():
     # Comprobar que existan áreas registradas antes de configurar
     if len(areas) == 0:
         print("No hay áreas registradas. Primero debe registrar un área.")
-        return # El enunciado no lo indica; se agregó para evitar un ciclo infinito pidiendo un código de área cuando no hay áreas registradas
+        return # El enunciado no lo indica, se agregó para evitar un ciclo infinito pidiendo un código de área cuando no hay áreas registradas
 
     # Solicitar el código de área hasta que se ingrese uno válido
     while True:
@@ -397,7 +376,6 @@ def configurar_lista_contactos():
         tipo = input("\nTipo de teléfono por omisión (M:Móvil, C:Casa, T:Trabajo, O:Otro): ")
 
         # Comprobar que el tipo ingresado sea uno de los códigos permitidos
-        # Las posiciones 0, 2, 4 y 6 contienen las letras M, C, T y O
         if (tipo == TIPOS_TELEFONO[0] or
             tipo == TIPOS_TELEFONO[2] or
             tipo == TIPOS_TELEFONO[4] or
@@ -441,12 +419,10 @@ def configurar_lista_contactos():
 # ---------------------------------- INICIO REGISTRAR CONTACTOS -------------------------------------------
 # ------------- FUNCIONES AUXILIARES DE CONTACTOS -------------
 
-# Función: existe_contacto
-# Propósito: Comprobar si un contacto está registrado utilizando
-#            su número de teléfono y su código de área
-# Entrada (E): Lista de contactos, código de área y teléfono
-# Salida (S): Devuelve True si encuentra ambos datos en un mismo
-#             contacto o False si no existe
+# EXISTE CONTACTO
+# Revisa si un contacto está registrado con ese teléfono y esa área
+# E: la lista de contactos, el área y el teléfono
+# S: True si el contacto existe, False si no
 
 def existe_contacto(contactos, area, telefono):
     existe = False
@@ -461,11 +437,10 @@ def existe_contacto(contactos, area, telefono):
 
 # ------------- BUSCAR CONTACTO -------------
 
-# Función: buscar_contacto
-# Propósito: Buscar un contacto por su número de teléfono y área.
-# Entrada (E): Lista de contactos, código de área y teléfono.
-# Salida (S): Devuelve la posición del contacto si existe
-#             o -1 si no está registrado.
+# BUSCAR CONTACTO
+# Busca un contacto por su teléfono y su área
+# E: la lista de contactos, el área y el teléfono
+# S: la posición del contacto en la lista, o -1 si no está
 
 def buscar_contacto(contactos, area, telefono): # La posición (0, 1, 2...) o -1
     posicion = -1
@@ -480,15 +455,10 @@ def buscar_contacto(contactos, area, telefono): # La posición (0, 1, 2...) o -1
 
 # ------------- AGREGAR CONTACTO -------------
 
-# Función: agregar_contacto
-# Propósito: Permitir registrar nuevos contactos
-# Entrada (E): Solicita por teclado teléfono, área, tipo, nombre, correo,
-#              dirección, fecha de nacimiento, pasatiempos, notas y la
-#              confirmación A/C
-# Salida (S): Agrega a la lista contactos una lista con los 9 datos
-#             si el usuario acepta; si cancela, no agrega nada
-#             Muestra mensajes de error, confirmación o cancelación
-#             No devuelve un valor
+# AGREGAR CONTACTO
+# Pide los 9 datos de un contacto, los valida y lo guarda si se acepta
+# E: teléfono, área, tipo, nombre, correo, dirección, fecha, pasatiempos, notas y opción A/C 
+# S: agrega el contacto a la lista contactos
 
 def agregar_contacto():
 
@@ -595,11 +565,8 @@ def agregar_contacto():
         while True:
             correo = input("Correo electrónico: ")
 
-            # Validar el formato parte1@parte2 sin espacios en blanco
-            # [^@\s]+ = uno o más caracteres que no sean @ ni espacio (parte1)
-            # @       = exactamente una arroba
-            # [^@\s]+ = uno o más caracteres que no sean @ ni espacio (parte2)
-            # fullmatch revisa que todo el correo cumpla el patrón, no solo una parte
+            # Revisa que el correo sea parte1@parte2, con una sola @ y sin espacios
+            # [^@\s]+ significa: uno o más caracteres que no sean @ ni espacio
             if re.fullmatch(r"[^@\s]+@[^@\s]+", correo):
                 break
 
@@ -699,12 +666,10 @@ def agregar_contacto():
 
 # ------------- CONSULTAR CONTACTO -------------
 
-# Función: consultar_contacto
-# Propósito: Permitir consultar los datos de un contacto registrado
-# Entrada (E): Solicita teléfono, área y la confirmación A para continuar
-# Salida (S): Muestra los nueve datos del contacto si existe
-#             Muestra un mensaje si el contacto no está registrado
-#             No modifica la lista contactos ni devuelve un valor
+# CONSULTAR CONTACTO
+# Muestra todos los datos de un contacto registrado
+# E: teléfono, área y la opción A 
+# S: muestra los datos del contacto o el mensaje de error
 
 def consultar_contacto():
 
@@ -792,13 +757,10 @@ def consultar_contacto():
 
 # ------------- ELIMINAR CONTACTO -------------
 
-# Función: eliminar_contacto
-# Propósito: Permitir eliminar un contacto registrado
-# Entrada (E): Solicita teléfono, área, la opción A/C y la confirmación SI/NO
-# Salida (S): Elimina el contacto de la lista contactos si el usuario acepta
-#             y confirma; si cancela, no elimina nada
-#             Muestra mensajes de error, confirmación o cancelación
-#             No devuelve un valor
+# ELIMINAR CONTACTO
+# Elimina un contacto si no pertenece a ningún grupo
+# E: teléfono, área, opción A/C y confirmación SI/NO 
+# S: quita el contacto de la lista contactos si se confirma
 
 def eliminar_contacto():
 
@@ -909,17 +871,10 @@ def eliminar_contacto():
             print("Eliminación cancelada")
 # ------------- MODIFICAR CONTACTO -------------
 
-# Función: modificar_contacto
-# Propósito: Permitir modificar el nombre, correo, dirección, fecha de
-#            nacimiento, pasatiempos y notas de un contacto registrado
-#            El teléfono, el área y el tipo de teléfono no se modifican
-# Entrada (E): Solicita el teléfono y el área del contacto, el nuevo valor
-#              de cada dato (con Enter se conserva el valor actual) y la
-#              confirmación A/C
-# Salida (S): Reemplaza los datos del contacto en la lista contactos si el
-#             usuario acepta. Si cancela, el contacto no cambia
-#             Muestra mensajes de error, confirmación o cancelación
-#             No devuelve un valor
+# MODIFICAR CONTACTO
+# Cambia los datos de un contacto; con Enter se deja el dato como estaba
+# E: teléfono, área, los datos nuevos y opción A/C 
+# S: guarda los cambios en la lista contactos si se acepta
 
 def modificar_contacto():
 
@@ -1019,11 +974,8 @@ def modificar_contacto():
             if nuevo_correo == "":
                 nuevo_correo = contactos[posicion][4]
 
-            # Validar el formato parte1@parte2 sin espacios en blanco
-            # [^@\s]+ = uno o más caracteres que no sean @ ni espacio (parte1)
-            # @       = exactamente una arroba
-            # [^@\s]+ = uno o más caracteres que no sean @ ni espacio (parte2)
-            # fullmatch revisa que todo el correo cumpla el patrón, no solo una parte
+            # Revisa que el correo sea parte1@parte2, con una sola @ y sin espacios
+            # [^@\s]+ significa: uno o más caracteres que no sean @ ni espacio
             if re.fullmatch(r"[^@\s]+@[^@\s]+", nuevo_correo):
                 break
 
@@ -1143,14 +1095,10 @@ def modificar_contacto():
 
 # ---------------------------------- MENU REGISTRAR CONTACTOS -------------------------------------------
 
-# Función: menu_registrar_contactos
-# Propósito: Mostrar el menú para administrar los contactos
-# Entrada (E): Solicita al usuario una opción del menú
-# Salida (S): Permite seleccionar las opciones de agregar,
-#             consultar, modificar y eliminar contactos
-#             Muestra un error si la opción no es válida
-#             Regresa al menú principal al seleccionar 0
-#             No devuelve un valor
+# MENÚ REGISTRAR CONTACTOS
+# Muestra las opciones de contactos y llama a la que se elija
+# E: la opción del menú 
+# S: ejecuta la opción elegida; con 0 vuelve al menú principal
 
 def menu_registrar_contactos():
     while True:
@@ -1182,11 +1130,10 @@ def menu_registrar_contactos():
 # ---------------------------------- INICIO ADMINISTRAR GRUPOS DE CONTACTOS -------------------------------------------
 # ------------- FUNCIONES AUXILIARES DE GRUPOS -------------
 
-# Función: buscar_grupo
-# Propósito: Buscar un grupo por su nombre dentro de la lista de grupos
-# Entrada (E): Lista de grupos y nombre del grupo que se desea buscar
-# Salida (S): Devuelve la posición del grupo si existe
-#             o -1 si no está registrado
+# BUSCAR GRUPO
+# Busca un grupo por su nombre
+# E: la lista de grupos y el nombre
+# S: la posición del grupo en la lista, o -1 si no está
 
 def buscar_grupo(grupos, nombre):
     posicion = -1
@@ -1198,11 +1145,10 @@ def buscar_grupo(grupos, nombre):
 
     return posicion
 
-# Función: buscar_contacto_en_grupo
-# Propósito: Buscar un contacto dentro de la lista de contactos de un grupo
-# Entrada (E): Lista de tuplas (teléfono, área) de un grupo, teléfono y área
-# Salida (S): Devuelve la posición del contacto dentro del grupo si existe
-#             o -1 si el contacto no está en el grupo
+# BUSCAR CONTACTO EN GRUPO
+# Busca un contacto dentro de la lista de un grupo
+# E: la lista de tuplas (teléfono, área) del grupo, el teléfono y el área
+# S: la posición del contacto en el grupo, o -1 si no está
 
 def buscar_contacto_en_grupo(contactos_del_grupo, telefono, area):
     posicion = -1
@@ -1215,11 +1161,10 @@ def buscar_contacto_en_grupo(contactos_del_grupo, telefono, area):
 
     return posicion
 
-# Función: contacto_en_algun_grupo
-# Propósito: Comprobar si un contacto pertenece a al menos un grupo
-# Entrada (E): Lista contactos_por_grupo, teléfono y área del contacto
-# Salida (S): Devuelve True si el contacto está en algún grupo
-#             o False si no está en ninguno
+# CONTACTO EN ALGÚN GRUPO
+# Revisa si un contacto pertenece al menos a un grupo
+# E: la lista contactos_por_grupo, el teléfono y el área
+# S: True si está en algún grupo, False si no
 
 def contacto_en_algun_grupo(contactos_por_grupo, telefono, area):
     en_grupo = False
@@ -1233,14 +1178,10 @@ def contacto_en_algun_grupo(contactos_por_grupo, telefono, area):
 
 # ------------- AGREGAR GRUPO -------------
 
-# Función: agregar_grupo
-# Propósito: Permitir registrar nuevos grupos de contactos
-# Entrada (E): Solicita el nombre del grupo y la confirmación A/C
-# Salida (S): Agrega el nombre a la lista grupos y una lista vacía a
-#             contactos_por_grupo si el usuario acepta
-#             Si cancela, no agrega nada
-#             Muestra mensajes de error, confirmación o cancelación
-#             No devuelve un valor
+# AGREGAR GRUPO
+# Pide el nombre de un grupo nuevo y lo guarda si se acepta
+# E: nombre del grupo y opción A/C 
+# S: agrega el nombre a grupos y una lista vacía a contactos_por_grupo
 
 def agregar_grupo():
 
@@ -1290,15 +1231,10 @@ def agregar_grupo():
 
 # ------------- AGREGAR CONTACTO A UN GRUPO -------------
 
-# Función: agregar_contacto_a_grupo
-# Propósito: Permitir agregar un contacto registrado a un grupo existente
-# Entrada (E): Solicita el nombre del grupo, el teléfono y el área del
-#              contacto, y la confirmación A/C
-# Salida (S): Agrega la tupla (teléfono, área) a la lista de contactos
-#             del grupo en contactos_por_grupo si el usuario acepta
-#             Si cancela, no agrega nada
-#             Muestra mensajes de error, confirmación o cancelación
-#             No devuelve un valor
+# AGREGAR CONTACTO A GRUPO
+# Agrega un contacto registrado a un grupo que ya existe
+# E: nombre del grupo, teléfono, área y opción A/C 
+# S: agrega la tupla (telefono, area) a la lista del grupo
 
 def agregar_contacto_a_grupo():
 
@@ -1409,18 +1345,10 @@ def agregar_contacto_a_grupo():
 
 # ------------- MODIFICAR GRUPO -------------
 
-# Función: modificar_grupo
-# Propósito: Permitir modificar el nombre de un grupo registrado
-# Entrada (E): Solicita el nombre del grupo, el nuevo nombre (con Enter se
-#              conserva el actual) y la confirmación A/C
-# Salida (S): Si el nuevo nombre no existe, cambia el nombre del grupo en la
-#             lista grupos
-#             Si ya existe, pasa los contactos del grupo actual al grupo
-#             existente (sin repetirlos) y elimina el grupo actual de las
-#             listas grupos y contactos_por_grupo
-#             Si cancela, no cambia nada
-#             Muestra mensajes de error, confirmación o cancelación
-#             No devuelve un valor
+# MODIFICAR GRUPO
+# Cambia el nombre de un grupo; si el nombre nuevo ya existe, pasa los contactos a ese grupo
+# E: nombre del grupo, nombre nuevo y opción A/C 
+# S: actualiza las listas grupos y contactos_por_grupo si se acepta
 
 def modificar_grupo():
 
@@ -1500,15 +1428,10 @@ def modificar_grupo():
 
 # ------------- ELIMINAR GRUPO -------------
 
-# Función: eliminar_grupo
-# Propósito: Permitir eliminar un grupo junto con su lista de contactos
-# Entrada (E): Solicita el nombre del grupo, la opción A/C y la
-#              confirmación SI/NO
-# Salida (S): Elimina el nombre del grupo de la lista grupos y su lista
-#             de contactos de contactos_por_grupo si el usuario acepta y
-#             confirma; si cancela, no elimina nada
-#             Muestra mensajes de error, confirmación o cancelación
-#             No devuelve un valor
+# ELIMINAR GRUPO
+# Elimina un grupo; sus contactos siguen registrados
+# E: nombre del grupo, opción A/C y confirmación SI/NO 
+# S: quita el grupo de grupos y de contactos_por_grupo si se confirma
 
 def eliminar_grupo():
 
@@ -1562,16 +1485,10 @@ def eliminar_grupo():
 
 # ------------- ELIMINAR CONTACTO DE UN GRUPO -------------
 
-# Función: eliminar_contacto_de_grupo
-# Propósito: Permitir eliminar un contacto de un grupo existente
-# Entrada (E): Solicita el nombre del grupo, el teléfono y el área del
-#              contacto, la confirmación A/C y la confirmación SI/NO
-# Salida (S): Elimina la tupla (teléfono, área) de la lista de contactos
-#             del grupo en contactos_por_grupo si el usuario confirma
-#             El contacto sigue registrado en la lista contactos
-#             Si cancela, no elimina nada
-#             Muestra mensajes de error, confirmación o cancelación
-#             No devuelve un valor
+# ELIMINAR CONTACTO DE GRUPO
+# Quita un contacto de un grupo, sin borrarlo de la lista contactos
+# E: nombre del grupo, teléfono, área, opción A/C y confirmación SI/NO 
+# S: quita la tupla del contacto de la lista del grupo si se confirma
 
 def eliminar_contacto_de_grupo():
 
@@ -1693,14 +1610,10 @@ def eliminar_contacto_de_grupo():
 
 # ---------------------------------- MENU ADMINISTRAR GRUPOS DE CONTACTOS -------------------------------------------
 
-# Función: menu_administrar_grupos_de_contactos
-# Propósito: Mostrar el menú para administrar grupos de contactos
-# Entrada (E): Solicita al usuario una opción del menú
-# Salida (S): Muestra las opciones para agregar, modificar y eliminar
-#             grupos, además de agregar o eliminar contactos de ellos
-#             Muestra un error si la opción no es válida
-#             Regresa al menú principal al seleccionar 0
-#             No devuelve un valor
+# MENÚ ADMINISTRAR GRUPOS DE CONTACTOS
+# Muestra las opciones de grupos y llama a la que se elija
+# E: la opción del menú 
+# S: ejecuta la opción elegida; con 0 vuelve al menú principal
 
 def menu_administrar_grupos_de_contactos():
     while True:
@@ -1735,44 +1648,36 @@ def menu_administrar_grupos_de_contactos():
 # ---------------------------------- INICIO LISTA DE CONTACTOS -------------------------------------------
 # ------------- FUNCIONES AUXILIARES DE LA LISTA DE CONTACTOS -------------
 
-# Función: coincide_con_filtro
-# Propósito: Comprobar si un dato cumple con un filtro, sin distinguir
-#            mayúsculas de minúsculas y permitiendo el comodín %
-#            (el % reemplaza cero o más caracteres)
-# Entrada (E): Texto del dato y texto del filtro
-# Salida (S): Devuelve True si el dato cumple el filtro o False si no lo cumple
-#             Un filtro vacío cumple con cualquier dato
-#             Un filtro sin % solo cumple si es exactamente igual al dato
+# COINCIDE CON FILTRO
+# Revisa si un dato cumple un filtro, sin importar mayúsculas y aceptando el comodín %
+# E: el dato y el filtro (textos)
+# S: True si cumple, False si no (un filtro vacío siempre cumple)
 
 def coincide_con_filtro(dato, filtro):
     if filtro == "":
         cumple = True
 
     else:
-        # Separar el filtro en las partes que están entre los %
+        # Separa el filtro en los pedazos que quedan entre los %
         partes = filtro.split("%")
 
-        # re.escape hace que símbolos como el punto o el paréntesis se tomen como texto normal
+        # re.escape hace que símbolos como . o ( se tomen como texto normal
         for i in range(len(partes)):
             partes[i] = re.escape(partes[i])
 
-        # Cada % se cambia por .* que significa "cero o más caracteres cualesquiera"
+         # Cada % se cambia por .* (cualquier cantidad de caracteres)
         patron = ".*".join(partes)
 
-        # fullmatch exige que todo el dato cumpla el patrón; re.IGNORECASE ignora mayúsculas y minúsculas
-        # fullmatch devuelve None si no coincide; "is not None" lo convierte en True o False
+        # fullmatch revisa todo el dato y re.IGNORECASE ignora mayúsculas y minúsculas
+        # Si no coincide devuelve None, por eso se compara con "is not None"
         cumple = re.fullmatch(patron, dato, re.IGNORECASE) is not None
 
     return cumple
 
-# Función: contacto_cumple_grupo
-# Propósito: Comprobar si un contacto pertenece a algún grupo cuyo nombre
-#            cumple con el filtro de grupo
-# Entrada (E): Listas grupos y contactos_por_grupo, teléfono y área del
-#              contacto, y el filtro de grupo
-# Salida (S): Devuelve True si el contacto está en algún grupo que cumple
-#             el filtro o False si no
-#             Un filtro vacío cumple siempre, aunque el contacto no esté en grupos
+# CONTACTO CUMPLE GRUPO
+# Revisa si un contacto está en algún grupo cuyo nombre cumple el filtro
+# E: las listas grupos y contactos_por_grupo, el teléfono, el área y el filtro de grupo
+# S: True si cumple, False si no (un filtro vacío siempre cumple)
 
 def contacto_cumple_grupo(grupos, contactos_por_grupo, telefono, area, filtro_grupo):
     if filtro_grupo == "":
@@ -1789,13 +1694,10 @@ def contacto_cumple_grupo(grupos, contactos_por_grupo, telefono, area, filtro_gr
 
     return cumple
 
-# Función: filtrar_contactos
-# Propósito: Obtener los contactos que cumplen con los seis filtros a la vez
-# Entrada (E): Listas contactos, grupos y contactos_por_grupo, y una lista
-#              con los seis filtros: nombre, teléfono, área, fecha de
-#              nacimiento, pasatiempos y grupo
-# Salida (S): Devuelve una lista con los contactos que cumplen todos los filtros
-#             No modifica ninguna de las listas recibidas
+# FILTRAR CONTACTOS
+# Busca los contactos que cumplen los seis filtros a la vez
+# E: las listas contactos, grupos y contactos_por_grupo, y la lista con los 6 filtros
+# S: una lista con los contactos que cumplen todos los filtros
 
 def filtrar_contactos(contactos, grupos, contactos_por_grupo, filtros):
     encontrados = []
@@ -1804,8 +1706,9 @@ def filtrar_contactos(contactos, grupos, contactos_por_grupo, filtros):
         # [i] indica cuál contacto se está revisando
         contacto = contactos[i]
 
-        # El teléfono, el área y la fecha se pasan a texto con str() para poder compararlos
-        # [0] teléfono, [1] área, [3] nombre, [6] fecha, [7] pasatiempos
+        # Teléfono, área y fecha pueden ser números, por eso se pasan a texto con str()
+        # Posiciones: [0] teléfono, [1] área, [3] nombre, [6] fecha, [7] pasatiempos
+        # El contacto solo se agrega si cumple los 6 filtros a la vez (por eso los and)
         if (coincide_con_filtro(contacto[3], filtros[0]) and
             coincide_con_filtro(str(contacto[0]), filtros[1]) and
             coincide_con_filtro(str(contacto[1]), filtros[2]) and
@@ -1817,19 +1720,16 @@ def filtrar_contactos(contactos, grupos, contactos_por_grupo, filtros):
 
     return encontrados
 
-# Función: nombre_tipo
-# Propósito: Obtener la descripción de un tipo de teléfono
-# Entrada (E): Código del tipo de teléfono (M, C, T u O)
-# Salida (S): Devuelve la descripción (Móvil, Casa, Trabajo u Otro)
-#             Si el código no existe, devuelve el mismo código
+# NOMBRE DEL TIPO
+# Da la descripción de un tipo de teléfono (M -> Móvil, C -> Casa...)
+# E: el código del tipo
+# S: la descripción, o el mismo código si no existe
 
 def nombre_tipo(tipo):
     nombre = tipo
 
     # TIPOS_TELEFONO = ("M", "Móvil", "C", "Casa", "T", "Trabajo", "O", "Otro")
-    # Los códigos están en las posiciones pares (0, 2, 4, 6)
-    # y su descripción en la posición siguiente (i + 1)
-    # range(0, len(TIPOS_TELEFONO), 2) avanza de 2 en 2: 0, 2, 4, 6
+    # Por eso se recorre de 2 en 2 (0, 2, 4, 6) y el nombre está en i + 1
     for i in range(0, len(TIPOS_TELEFONO), 2):
         if TIPOS_TELEFONO[i] == tipo:
             nombre = TIPOS_TELEFONO[i + 1]
@@ -1837,83 +1737,63 @@ def nombre_tipo(tipo):
     return nombre
 
 
-# Función: texto_pdf
-# Propósito: Preparar un dato para escribirlo en el PDF
-# Entrada (E): Un dato del contacto (texto o número)
-# Salida (S): Devuelve el dato como texto; los caracteres que la fuente
-#             del PDF no puede mostrar (por ejemplo, emojis) se cambian por ?
+# TEXTO PARA EL PDF
+# Pasa un dato a texto y cambia por ? lo que el PDF no puede mostrar
+# E: un dato del contacto (texto o número)
+# S: el dato como texto listo para el PDF
 
 def texto_pdf(dato):
-    # str() convierte el dato en texto (la fecha puede ser el número 0)
+    # Se pasa a texto porque algunos datos son números (por ejemplo, la fecha 0)
     texto = str(dato)
 
-    # La fuente Helvetica solo conoce el alfabeto latin-1 (letras, números, tildes, ñ, ¿ y ¡)
-    # encode(..., "replace") pasa el texto a ese alfabeto y cambia por ? lo que no existe en él
-    # decode(...) lo vuelve a convertir en texto normal
+    # La letra del PDF solo conoce letras, números, tildes, ñ, ¿ y ¡ (latin-1)
+    # encode cambia por ? lo que no conoce (como un emoji) y decode lo deja como texto otra vez
     texto = texto.encode("latin-1", "replace").decode("latin-1")
     return texto
 
 
-# Función: emitir_listado
-# Propósito: Emitir el listado de contactos en un archivo PDF
-# Entrada (E): Lista de contactos que cumplen con los filtros
-# Salida (S): Crea un archivo PDF con una tabla de los contactos en la
-#             carpeta del programa y muestra su nombre en pantalla
-#             Si no hay contactos o falta la biblioteca, muestra un mensaje
-#             No devuelve un valor
+# EMITIR LISTADO
+# Crea el PDF con los contactos que cumplen los filtros
+# E: la lista de contactos encontrados
+# S: guarda lista_contactos_N.pdf en la carpeta del programa
 
 def emitir_listado(encontrados):
     if len(encontrados) == 0:
         print("No hay contactos que cumplan con los filtros.")
 
-    # Comprobar que la biblioteca fpdf2 esté instalada antes de usarla
-    # find_spec busca la biblioteca: si no la encuentra devuelve None (nada)
+    # Antes de usar fpdf2 se revisa que esté instalada (si no está, find_spec devuelve None)
     elif importlib.util.find_spec("fpdf") is None:
         print("ERROR: Falta instalar la biblioteca fpdf2. Escriba en la terminal: python -m pip install fpdf2")
 
     else:
-        # Traer la clase FPDF de la biblioteca fpdf2 (solo cuando ya se sabe que está instalada)
+        
         from fpdf import FPDF
 
-        # FPDF() crea un documento PDF vacío
-        # orientation="L" (landscape) pone la hoja horizontal para que quepan las 8 columnas
+        # Documento nuevo en hoja horizontal ("L") para que quepan las 8 columnas
         pdf = FPDF(orientation="L")
-
-        # add_page() agrega una hoja en blanco al documento
         pdf.add_page()
 
-        # set_font(letra, estilo, tamaño) elige la letra: "B" es negrita (bold)
+        # Título en negrita ("B") y centrado ("C")
+        # new_x y new_y hacen que lo siguiente se escriba en la línea de abajo
         pdf.set_font("Helvetica", "B", 14)
-
-        # cell(ancho, alto, texto, ...) escribe una línea de texto
-        # ancho 0 = todo el ancho de la hoja; align="C" la centra
-        # new_x="LMARGIN" y new_y="NEXT" hacen que lo siguiente empiece abajo, en el margen izquierdo
         pdf.cell(0, 10, "LISTA DIGITAL DE CONTACTOS - LISTA DE CONTACTOS", new_x="LMARGIN", new_y="NEXT", align="C")
 
-        # Letra normal (sin "B") de tamaño 10 para la cantidad de contactos
+        # Cantidad de contactos con letra normal
         pdf.set_font("Helvetica", size=10)
         pdf.cell(0, 8, "Contactos encontrados: " + str(len(encontrados)), new_x="LMARGIN", new_y="NEXT")
 
-        # Letra más pequeña para la tabla
+        # Tabla con letra más pequeña; col_widths es el ancho de cada columna
+        # Todo lo que va dentro del with son las filas; al terminar, la tabla se dibuja en el PDF
         pdf.set_font("Helvetica", size=8)
-
-        # with pdf.table(...) as tabla: abre una tabla llamada tabla
-        # Todo lo que está indentado debajo son las filas de la tabla
-        # Al terminar el bloque, la tabla se dibuja en el PDF
-        # col_widths = ancho de cada una de las 8 columnas; text_align="LEFT" alinea el texto a la izquierda
-        # Si un texto es largo, baja de línea dentro de su celda; si no cabe en la hoja, sigue en otra página
         with pdf.table(col_widths=(35, 30, 18, 45, 45, 22, 40, 42), text_align="LEFT") as tabla:
 
-            # tabla.row() crea una fila nueva; la primera fila es el encabezado y se repite en cada página
+            # La primera fila es el encabezado y se repite en cada página
             encabezado = tabla.row()
             for titulo in ("Nombre", "Teléfono y área", "Tipo", "Correo electrónico",
                            "Dirección física", "Fecha de nacimiento", "Pasatiempos", "Notas"):
-                # fila.cell(texto) agrega una celda (columna) a la fila
                 encabezado.cell(texto_pdf(titulo))
 
-            # Una fila por cada contacto encontrado
-            # Orden del contacto: [0] teléfono, [1] área, [2] tipo, [3] nombre, [4] correo,
-            # [5] dirección, [6] fecha, [7] pasatiempos, [8] notas
+            # Una fila por cada contacto, con un dato en cada celda
             for i in range(len(encontrados)):
                 contacto = encontrados[i]
                 fila = tabla.row()
@@ -1926,21 +1806,17 @@ def emitir_listado(encontrados):
                 fila.cell(texto_pdf(contacto[7]))                                       # pasatiempos
                 fila.cell(texto_pdf(contacto[8]))                                       # notas
 
-        # os.path.abspath(__file__) = ruta completa de contactos.py
-        # os.path.dirname(...) = se queda solo con la carpeta donde está contactos.py
+        # Carpeta donde está contactos.py
         carpeta = os.path.dirname(os.path.abspath(__file__))
 
-        # Buscar un nombre de archivo libre: lista_contactos_1.pdf, lista_contactos_2.pdf, ...
-        # así no se reemplaza un listado anterior que esté abierto
-        # os.path.join(carpeta, nombre) une la carpeta y el nombre en una sola ruta
-        # os.path.exists(ruta) devuelve True si ese archivo ya existe
+        # Busca un nombre libre (lista_contactos_1.pdf, _2, ...) para no reemplazar un listado anterior
         numero = 1
         ruta = os.path.join(carpeta, "lista_contactos_" + str(numero) + ".pdf")
         while os.path.exists(ruta):
             numero = numero + 1
             ruta = os.path.join(carpeta, "lista_contactos_" + str(numero) + ".pdf")
 
-        # output(ruta) guarda el PDF en esa ruta
+        # Guarda el PDF y muestra dónde quedó
         pdf.output(ruta)
 
         # os.path.basename(ruta) muestra solo el nombre del archivo, sin la carpeta
@@ -1950,17 +1826,10 @@ def emitir_listado(encontrados):
 
 # ------------- LISTA DE CONTACTOS -------------
 
-# Función: lista_contactos
-# Propósito: Solicitar los seis filtros y emitir el listado de los
-#            contactos que cumplen con todos ellos
-# Entrada (E): Solicita nombre, teléfono, área, fecha de nacimiento,
-#              pasatiempos y grupo (se pueden dejar vacíos y se puede usar
-#              el comodín %), y la confirmación A/C
-# Salida (S): Si el usuario acepta, emite el listado de contactos que
-#             cumplen los filtros
-#             Si cancela, vuelve a mostrar la ventana con los filtros vacíos
-#             Con C en el primer filtro regresa al menú principal
-#             No devuelve un valor
+# LISTA DE CONTACTOS
+# Pide los 6 filtros y emite el listado si se acepta; con C en el primer filtro vuelve al menú
+# E: los 6 filtros y la opción A/C (se piden con input)
+# S: emite el listado en PDF o lo cancela
 
 def lista_contactos():
 
@@ -1999,11 +1868,10 @@ def lista_contactos():
 
 # ---------------------------------- INICIO ACERCA DE -------------------------------------------
 
-# Función: acerca_de
-# Propósito: Mostrar la información general del programa
-# Entrada (E): Nombre del programa, versión, fecha de creación y autor
-# Salida (S): Muestra los cuatro datos en pantalla
-#             No devuelve un valor
+# ACERCA DE
+# Muestra el nombre del programa, la versión, la fecha de creación y el autor
+# E: nombre, versión, fecha y autor
+# S: muestra los datos en pantalla
 
 def acerca_de(nombre, version, fecha, autor):
     print("\n      ACERCA DE\n")
@@ -2016,28 +1884,24 @@ def acerca_de(nombre, version, fecha, autor):
 
 # ---------------------------------- INICIO AYUDA -------------------------------------------
 
-# Función: ayuda
-# Propósito: Mostrar en pantalla el manual de usuario del programa
-# Entrada (E): Nombre del archivo PDF del manual de usuario
-# Salida (S): Abre el manual con el visor de PDF del computador
-#             Si el archivo no existe, muestra un mensaje de error
-#             No devuelve un valor
+# AYUDA
+# Abre el manual de usuario en PDF
+# E: el nombre del archivo del manual
+# S: abre el manual, o muestra un error si no está en la carpeta
 
 def ayuda(nombre_archivo):
     print("\n      AYUDA\n")
 
-    # os.path.abspath(__file__) = ruta completa de contactos.py
-    # os.path.dirname(...) = se queda solo con la carpeta donde está contactos.py
+    # Carpeta donde está contactos.py (ahí debe estar el manual)
     carpeta = os.path.dirname(os.path.abspath(__file__))
 
-    # os.path.join(carpeta, nombre) une la carpeta y el nombre del manual en una sola ruta
+    # Une la carpeta con el nombre del manual para tener la ruta completa
     ruta = os.path.join(carpeta, nombre_archivo)
 
-    # os.path.exists(ruta) devuelve True si el archivo existe; se revisa antes de abrirlo
+    # Revisa que el manual exista antes de abrirlo
     if os.path.exists(ruta):
         print("Abriendo el manual de usuario...")
-        # os.startfile(ruta) abre el archivo con el programa predeterminado de Windows (el visor de PDF)
-        # El programa no espera a que se cierre el PDF: vuelve al menú de inmediato
+        # Abre el PDF con el visor de Windows; el programa vuelve al menú sin esperar
         os.startfile(ruta)
     else:
         print("ERROR: No se encontró el manual de usuario (" + nombre_archivo + ").")
@@ -2047,14 +1911,10 @@ def ayuda(nombre_archivo):
 
 #  ---------------------------------- MENU PRINCIPAL -------------------------------------------
 
-# Función: menu_principal
-# Propósito: Mostrar el menú principal y permitir al usuario
-#            seleccionar las diferentes funcionalidades del programa
-# Entrada (E): Solicita al usuario una opción del menú
-# Salida (S): Llama a la función correspondiente según la opción
-#             seleccionada y muestra un error si la opción no existe
-#             Finaliza el menú cuando el usuario selecciona 0
-#             No devuelve un valor
+# MENÚ PRINCIPAL
+# Muestra el menú principal y llama a la opción que se elija
+# E: la opción del menú 
+# S: ejecuta la opción elegida; con 0 termina el programa
 
 def menu_principal():
     while True:
